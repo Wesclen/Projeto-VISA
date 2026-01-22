@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Formulário BPA - Vigilância Sanitária</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+
+form {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+h2 {
+    border-left: 5px solid #0077ff;
+    padding-left: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 15px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.next {
+    background: #0077ff;
+    color: white;
+}
+
+.prev {
+    background: #ccc;
+}
+
+.submit {
+    background: #28a745;
+    color: white;
+    width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<form action="https://api.sheetmonkey.io/form/wzWe4jH5d9aZ2Dx3GJKqUk" method="POST">
+
+<input type="hidden" name="Created At" value="x-sheetmonkey-current-date-time">
+<input type="hidden" name="redirect" value="sucesso.html">
+
+<!-- ===================== -->
+<!-- SEÇÃO 1 -->
+<!-- ===================== -->
+<div class="step active">
+<h2>Seção 1 · Identificação</h2>
+
+<label>E-mail</label>
+<input type="email" name="Email" required>
+
+<label>Setor / Núcleo</label>
+<input type="text" name="Setor_Nucleo" required>
+
+<label>Mês de competência</label>
+<input type="number" name="Mes_Competencia" min="1" max="12" required>
+
+<label>Ano de competência</label>
+<input type="number" name="Ano_Competencia" min="2000" required>
+
+<div class="buttons">
+    <span></span>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
+
+<!-- ===================== -->
+<!-- SEÇÃO 2 -->
+<!-- ===================== -->
+<div class="step">
+<h2>Seção 2 · Cadastro</h2>
+
+<label>Cadastro de estabelecimentos VISA</label>
+<input type="number" name="Cadastro_VISA" min="0" value="0">
+
+<label>Cadastro de hospitais</label>
+<input type="number" name="Cadastro_Hospitais" min="0" value="0">
+
+<label>Cadastro de serviços de alimentação</label>
+<input type="number" name="Cadastro_Alimentacao" min="0" value="0">
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
+
+<!-- ===================== -->
+<!-- SEÇÃO 3 -->
+<!-- ===================== -->
+<div class="step">
+<h2>Seção 3 · Inspeção</h2>
+
+<label>Inspeções realizadas</label>
+<input type="number" name="Inspecoes" min="0" value="0">
+
+<label>Inspeções em hospitais</label>
+<input type="number" name="Inspecoes_Hospitais" min="0" value="0">
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
+
+<!-- ===================== -->
+<!-- SEÇÃO FINAL -->
+<!-- ===================== -->
+<div class="step">
+<h2>Finalização</h2>
+
+<label>Observações gerais</label>
+<input type="text" name="Observacoes">
+
+<button type="submit" class="submit">Enviar BPA</button>
+</div>
+
+</form>
+
+<script>
+const steps = document.querySelectorAll(".step");
+let currentStep = 0;
+
+function showStep(index) {
+    steps.forEach(step => step.classList.remove("active"));
+    steps[index].classList.add("active");
+}
+
+document.querySelectorAll(".next").forEach(btn => {
+    btn.addEventListener("click", () => {
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    });
+});
+
+document.querySelectorAll(".prev").forEach(btn => {
+    btn.addEventListener("click", () => {
+        if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+});
+</script>
+
+</body>
+</html>
