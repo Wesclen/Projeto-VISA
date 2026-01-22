@@ -12,20 +12,15 @@ body {
 }
 
 form {
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
     background: #fff;
     padding: 30px;
     border-radius: 8px;
 }
 
-.step {
-    display: none;
-}
-
-.step.active {
-    display: block;
-}
+.step { display: none; }
+.step.active { display: block; }
 
 h2 {
     border-left: 5px solid #0077ff;
@@ -34,40 +29,32 @@ h2 {
 
 label {
     font-weight: bold;
+    display: block;
+    margin-top: 10px;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 8px;
-    margin: 6px 0 15px;
+    margin-top: 5px;
 }
 
 .buttons {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 10px 25px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.next {
-    background: #0077ff;
-    color: white;
-}
-
-.prev {
-    background: #ccc;
-}
-
-.submit {
-    background: #28a745;
-    color: white;
-    width: 100%;
-}
+.next { background: #0077ff; color: white; }
+.prev { background: #999; color: white; }
+.submit { background: #28a745; color: white; width: 100%; }
 </style>
 </head>
 
@@ -75,26 +62,39 @@ button {
 
 <form action="https://api.sheetmonkey.io/form/wzWe4jH5d9aZ2Dx3GJKqUk" method="POST">
 
-<input type="hidden" name="Created At" value="x-sheetmonkey-current-date-time">
 <input type="hidden" name="redirect" value="sucesso.html">
 
 <!-- ===================== -->
-<!-- SEÇÃO 1 -->
+<!-- SEÇÃO 1 · IDENTIFICAÇÃO -->
 <!-- ===================== -->
 <div class="step active">
-<h2>Seção 1 · Identificação</h2>
+<h2>Identificação</h2>
+
+<label>Matrícula (9 dígitos)</label>
+<input type="text" name="Matricula"
+       pattern="\d{9}"
+       minlength="9"
+       maxlength="9"
+       required
+       placeholder="Ex: 123456789">
 
 <label>E-mail</label>
 <input type="email" name="Email" required>
 
 <label>Setor / Núcleo</label>
-<input type="text" name="Setor_Nucleo" required>
+<select name="Setor_Nucleo" required>
+    <option value="">Selecione</option>
+    <option>Descentralização</option>
+    <option>NSS</option>
+    <option>NEA</option>
+    <option>Protocolo</option>
+    <option>Alimentos</option>
+    <option>Medicamentos</option>
+</select>
 
-<label>Mês de competência</label>
-<input type="number" name="Mes_Competencia" min="1" max="12" required>
 
-<label>Ano de competência</label>
-<input type="number" name="Ano_Competencia" min="2000" required>
+<label>Data de competência</label>
+<input type="date" name="Ano_Competencia" min="2000" required>
 
 <div class="buttons">
     <span></span>
@@ -102,20 +102,43 @@ button {
 </div>
 </div>
 
-<!-- ===================== -->
-<!-- SEÇÃO 2 -->
-<!-- ===================== -->
-<div class="step">
-<h2>Seção 2 · Cadastro</h2>
+<!-- SEÇÃO 2 · CADASTRO -->
 
-<label>Cadastro de estabelecimentos VISA</label>
-<input type="number" name="Cadastro_VISA" min="0" value="0">
+<div class="step">
+<h2>Cadastro</h2>
+
+<label>Cadastro de Estabelecimentos sujeitos a Vigilância Sanitária sem outra classificação - 01.02.01.007-2</label>
+<input type="number" name="Cad_Estab_VISA" min="0" value="0">
+
+<label>Cadastro de Instituições de Longa Permanencia para Idosos - 01.02.01.027-7</label>
+<input type="number" name="Cad_Estab_VISA" min="0" value="0">
 
 <label>Cadastro de hospitais</label>
-<input type="number" name="Cadastro_Hospitais" min="0" value="0">
+<input type="number" name="Cad_Hospitais" min="0" value="0">
 
-<label>Cadastro de serviços de alimentação</label>
-<input type="number" name="Cadastro_Alimentacao" min="0" value="0">
+<label>Cadastro de Industrias de Medicamentos - 01.02.01.030-7</label>
+<input type="number" name="Cad_Industrias_Medicamentos" min="0" value="0">
+
+<label>Cadastro de Industrias de Insumos Farmaceuticos - 01.02.01.054-4</label>
+<input type="number" name="Cad_Industrias_Insumos_Farmaceuticos" min="0" value="0">
+
+<label>Cadastro de Industrias de Produtos para a Saúde - 01.02.01.055-2</label>
+<input type="number" name="Cad_Industrias_Insumos_Farmaceuticos" min="0" value="0">
+
+<label>Cadastro de Estabelecimentos de Serviço de Alimentação - 01.02.01.045-5</label>
+<input type="number" name="Cad_Alimentacao" min="0" value="0">
+
+<label>Cadastro de Serviços de Diagnóstico e Tratamento do Cancer de Colo de Utero e Mama - 01.02.01.033-1</label>
+<input type="number" name="Cad_Servicos_Diagnostico_Cancer" min="0" value="0">
+
+<label>Cadastro de Serviços de Hemoterapia - 01.2.01.039-0</label>
+<input type="number" name="Cad_Servicos_Hemoterapia" min="0" value="0">
+
+<label>Cadastro de Serviços de Terapia Renal Substitutiva - 01.2.01.042-0</label>
+<input type="number" name="Cad_Servicos_Terapia_Renal" min="0" value="0">
+
+<label>Exclusão de Cadastro de Estabelecimentos sujeitos a Vigilância Sanitária com atividades encerradas - 01.2.01.016-1</label>
+<input type="number" name="Cad_Alimentacao" min="0" value="0">
 
 <div class="buttons">
     <button type="button" class="prev">Voltar</button>
@@ -123,17 +146,43 @@ button {
 </div>
 </div>
 
-<!-- ===================== -->
-<!-- SEÇÃO 3 -->
-<!-- ===================== -->
+<!-- SEÇÃO 3 · INSPEÇÃO -->
+
 <div class="step">
-<h2>Seção 3 · Inspeção</h2>
+<h2>Inspeção</h2>
 
-<label>Inspeções realizadas</label>
-<input type="number" name="Inspecoes" min="0" value="0">
+<label>Inspeção  de Estabelecimentos sujeitos a Vigilância Sanitária sem outra classificação - 01.2.01.017-0</label>
+<input type="number" name="Insp_Geral" min="0" value="0">
 
-<label>Inspeções em hospitais</label>
-<input type="number" name="Inspecoes_Hospitais" min="0" value="0">
+<label>Inspeção Sanitária de Instituições de Longa Permanencia para Idosos - 01.2.01.028-5</label>
+<input type="number" name="Insp_long_permanencia" min="0" value="0">
+
+<label>Inspeção Sanitária de Hospitais - 01.2.01.014-5</label>
+<input type="number" name="Insp_Hospital" min="0" value="0">
+
+<label>Inspeção Sanitária de Industrias de Medicamentos - 01.2.01.031-5</label>
+<input type="number" name="Insp_Industrias_Medicamentos" min="0" value="0">
+
+<label>Inspeção Sanitária de Industrias de Insumos Farmaceuticos - 01.2.01.056-0</label>
+<input type="number" name="Insp_Industrias_Insumos_Farmaceuticos" min="0" value="0">
+
+<label>Inspeção Sanitária de Industrias de Produtos para a Saúde - 01.2.01.057-9</label>
+<input type="number" name="Insp_Industrias_Produtos_Saude" min="0" value="0">
+
+<label>Inspeção Sanitária de Estabelecimentos de Serviço de Alimentação - 01.2.01.046-3</label>
+<input type="number" name="Insp_Alimentacao" min="0" value="0">
+
+<label>Inspeção Sanitária de Serviço de Diagnósticos e Tratamento de Cancer de Colo de Útero e Mama - 01.2.01.034-0</label>
+<input type="number" name="Insp_Servicos_Diagnostico_Cancer" min="0" value="0">
+
+<label>Inspeção Sanitária de Serviço Hospitalares de atenção ao Parto e a Criança - 01.2.01.037-4</label>
+<input type="number" name="Insp_serv_hospitalares_Parto" min="0" value="0">
+
+<label>Inspeção Sanitária de Serviço de Hemoterapia - 01.2.01.043-9</label>
+<input type="number" name="Insp_Hemoterapia" min="0" value="0">
+
+<label>Inspeção Sanitária de Serviço de Terapia Renal Substitutiva - 01.2.01.040-4</label>
+<input type="number" name="Insp_Terapia_Renal" min="0" value="0">
 
 <div class="buttons">
     <button type="button" class="prev">Voltar</button>
@@ -141,14 +190,116 @@ button {
 </div>
 </div>
 
-<!-- ===================== -->
-<!-- SEÇÃO FINAL -->
-<!-- ===================== -->
-<div class="step">
-<h2>Finalização</h2>
+<!-- SEÇÃO 4 · LICENCIAMENTO -->
 
-<label>Observações gerais</label>
-<input type="text" name="Observacoes">
+<div class="step">
+<h2>Licenciamento</h2>
+
+<label>Licenciamento de Estabelecimentos Sujeitos a Vigilancia Sanitária sem outra classificação  - 01.2.01.018-8</label>
+<input type="number" name="Lic_Estab" min="0" value="0">
+
+<label>Licenciamento Sanitário de Instituições de Longa Permanencia de Idosos  - 01.2.01.029=3</label>
+<input type="number" name="Lic_Idoso" min="0" value="0">
+
+<label>Licenciamento Sanitário de Hospitais  - 01.2.01.026-9</label>
+<input type="number" name="Lic_Hospital" min="0" value="0">
+
+<label>Licenciamento Sanitário de Industria de  Medicamentos  - 01.2.01.032-3</label>
+<input type="number" name="Lic_Industria_Medicamentos" min="0" value="0">
+
+<label>Licenciamento de  Estabelecimentos de serviço de Alimentação - 01.2.01.047-1</label>
+<input type="number" name="Lic_Industria_Medicamentos" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços de Diagnostico e Tratamento de Cancer de Colo de Utero e de Mama - 01.2.01.035-8</label>
+<input type="number" name="Lic_Servicos_Diagnostico_Cancer" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços Hospitalares de Parto e atenção a Criança - 01.2.01.038-2</label>
+<input type="number" name="Lic_Servicos_Hospitalares_Parto" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços Hospitalares de Hemoterapia - 01.2.01.041-2</label>
+<input type="number" name="Lic_Servicos_Hospitalares_Hemoterapia" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços Hospitalares de Terapia Renal Substitutiva - 01.2.01.044-7</label>
+<input type="number" name="Lic_Servicos_Hospitalares_Terapia_Renal" min="0" value="0">
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
+
+<!-- SEÇÃO 5 · INVESTIGAÇÃO -->
+
+<div class="step">
+<h2>Investigação</h2>
+
+<label>Investigação de Surtos de Doenças Transmitidas por Alimentos - 01.2.01.020-0</label>
+<input type="number" name="Inv_Surtos_Alim" min="0" value="0">
+
+<label>Investigação de Surtos de Infecções em Serviços de Saúde - 01.2.01.021-8</label>
+<input type="number" name="Inv_Infec_Saude" min="0" value="0">
+
+<label>Informe a quantidade de Investigação de Eventos Adversos e/ou Queixas Técnicas - 01.2.01.015-3</label>
+<input type="number" name="Inv_Eventos_Adversos_Queixas_Tecnicas" min="0" value="0">
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
+
+<!-- SEÇÃO 6 · AÇÕES EDUCATIVAS -->
+
+<div class="step">
+<h2>Ações Educativas</h2>
+
+<label>Informe a quantidade de Ações Educativas para a População - 01.2.01.022-6</label>
+<input type="number" name="Educ_Populacao" min="0" value="0">
+
+<label>Informe a quantidade de Ações Educativas para o setor Regulado - 01.2.01.005-6</label>
+<input type="number" name="Educ_Setor_Regulado" min="0" value="0">
+
+<label>Informe a quantidade de Ações Educativas sobre a Temática de Dengue, realizadas para a população - 01.2.01.050-1</label>
+<input type="number" name="Educ_Dengue_Populacao" min="0" value="0">
+
+
+<label>Informe a quantidade de Ações Educativas, com relação ao consumo de sódio, açucar e gorduras,  realizadas para o setor regulado e a população - 01.2.01.051-0</label>
+<input type="number" name="Educ_Consumo_Sodio_Acucar_Gorduras" min="0" value="0">
+
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
+
+<!-- SEÇÃO 7 · OUTROS -->
+
+<div class="step">
+<h2>Outros</h2>
+
+<label>Informe a quantidade de Análises de Projetos Básicos de Arquitetura - 01.2.01.006-4</label>
+<input type="number" name="Analise_Projetos_Arquitetura" min="0" value="0">
+
+<label>Informe a quantidade de Aprovação de Projetos Básicos de Arquitetura - 01.2.01.019-6</label>
+<input type="number" name="Aprovacao_Projetos_Arquitetura" min="0" value="0">
+
+<label>Informe a quantidade de Recebimento de  Denuncia / Reclamação - 01.2.01.023-4</label>
+<input type="number" name="Recebimento_Denuncia_Reclamacao" min="0" value="0">
+
+<label>Informe a quantidade de Atendimento de  Denuncia / Reclamação - 01.2.01.024-2</label>
+<input type="number" name="Atendimento_Denuncia_Reclamacao" min="0" value="0">
+
+<label>Informe a quantidade de Instauração de Processos Administrativos Sanitários - 01.2.01.052-8</label>
+<input type="number" name="Instauracao_Processos_Administrativos_Sanitarios" min="0" value="0">
+<label>Informe a quantidade de Conclusão de Processos Administrativos Sanitários - 01.2.01.053-6</label>
+<input type="number" name="Conclusao_Processos_Administrativos_Sanitarios" min="0" value="0">
+
+<label>Informe a quantidade de Fiscalização do uso de produtos fumigeros, derivados do tabaco em ambientes coletivos fechados, públicos ou privados - 01.2.01.048</label>
+<input type="number" name="Fiscalizacao_Produtos_Fumigeros_Tabaco" min="0" value="0">
+
+<label>Informe a quantidade de Laudo de Análise Laboratorial do Programa de Monitoramento de Alimentos recebidos pela Vigilância Sanitária - 01.2.01.049-8</label>
+<input type="number" name="Laudo_Analise_Laboratorial" min="0" value="0">
 
 <button type="submit" class="submit">Enviar BPA</button>
 </div>
@@ -159,28 +310,28 @@ button {
 const steps = document.querySelectorAll(".step");
 let currentStep = 0;
 
-function showStep(index) {
-    steps.forEach(step => step.classList.remove("active"));
-    steps[index].classList.add("active");
+function showStep(i) {
+    steps.forEach(s => s.classList.remove("active"));
+    steps[i].classList.add("active");
 }
 
-document.querySelectorAll(".next").forEach(btn => {
-    btn.addEventListener("click", () => {
+document.querySelectorAll(".next").forEach(btn =>
+    btn.onclick = () => {
         if (currentStep < steps.length - 1) {
             currentStep++;
             showStep(currentStep);
         }
-    });
-});
+    }
+);
 
-document.querySelectorAll(".prev").forEach(btn => {
-    btn.addEventListener("click", () => {
+document.querySelectorAll(".prev").forEach(btn =>
+    btn.onclick = () => {
         if (currentStep > 0) {
             currentStep--;
             showStep(currentStep);
         }
-    });
-});
+    }
+);
 </script>
 
 </body>
