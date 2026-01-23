@@ -12,20 +12,15 @@ body {
 }
 
 form {
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
     background: #fff;
     padding: 30px;
     border-radius: 8px;
 }
 
-.step {
-    display: none;
-}
-
-.step.active {
-    display: block;
-}
+.step { display: none; }
+.step.active { display: block; }
 
 h2 {
     border-left: 5px solid #0077ff;
@@ -34,39 +29,39 @@ h2 {
 
 label {
     font-weight: bold;
+    display: block;
+    margin-top: 10px;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 8px;
-    margin: 6px 0 15px;
+    margin-top: 5px;
+    box-sizing: border-box;
 }
 
 .buttons {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 10px 25px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.next {
-    background: #0077ff;
-    color: white;
-}
+.next { background: #0077ff; color: white; }
+.prev { background: #999; color: white; }
+.submit { background: #28a745; color: white; width: 100%; }
 
-.prev {
-    background: #ccc;
-}
-
-.submit {
-    background: #28a745;
-    color: white;
-    width: 100%;
+.page-indicator {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -75,112 +70,89 @@ button {
 
 <form action="https://api.sheetmonkey.io/form/wzWe4jH5d9aZ2Dx3GJKqUk" method="POST">
 
-<input type="hidden" name="Created At" value="x-sheetmonkey-current-date-time">
 <input type="hidden" name="redirect" value="sucesso.html">
 
-<!-- ===================== -->
-<!-- SEÇÃO 1 -->
-<!-- ===================== -->
-<div class="step active">
-<h2>Seção 1 · Identificação</h2>
+<!-- Container para carregar as seções dinamicamente -->
+<div id="secoes-container"></div>
 
-<label>E-mail</label>
-<input type="email" name="Email" required>
 
-<label>Setor / Núcleo</label>
-<input type="text" name="Setor_Nucleo" required>
-
-<label>Mês de competência</label>
-<input type="number" name="Mes_Competencia" min="1" max="12" required>
-
-<label>Ano de competência</label>
-<input type="number" name="Ano_Competencia" min="2000" required>
-
-<div class="buttons">
-    <span></span>
-    <button type="button" class="next">Próximo</button>
-</div>
-</div>
-
-<!-- ===================== -->
-<!-- SEÇÃO 2 -->
-<!-- ===================== -->
-<div class="step">
-<h2>Seção 2 · Cadastro</h2>
-
-<label>Cadastro de estabelecimentos VISA</label>
-<input type="number" name="Cadastro_VISA" min="0" value="0">
-
-<label>Cadastro de hospitais</label>
-<input type="number" name="Cadastro_Hospitais" min="0" value="0">
-
-<label>Cadastro de serviços de alimentação</label>
-<input type="number" name="Cadastro_Alimentacao" min="0" value="0">
-
-<div class="buttons">
-    <button type="button" class="prev">Voltar</button>
-    <button type="button" class="next">Próximo</button>
-</div>
-</div>
-
-<!-- ===================== -->
-<!-- SEÇÃO 3 -->
-<!-- ===================== -->
-<div class="step">
-<h2>Seção 3 · Inspeção</h2>
-
-<label>Inspeções realizadas</label>
-<input type="number" name="Inspecoes" min="0" value="0">
-
-<label>Inspeções em hospitais</label>
-<input type="number" name="Inspecoes_Hospitais" min="0" value="0">
-
-<div class="buttons">
-    <button type="button" class="prev">Voltar</button>
-    <button type="button" class="next">Próximo</button>
-</div>
-</div>
-
-<!-- ===================== -->
-<!-- SEÇÃO FINAL -->
-<!-- ===================== -->
-<div class="step">
-<h2>Finalização</h2>
-
-<label>Observações gerais</label>
-<input type="text" name="Observacoes">
-
-<button type="submit" class="submit">Enviar BPA</button>
-</div>
 
 </form>
 
-<script>
-const steps = document.querySelectorAll(".step");
-let currentStep = 0;
+<div class="page-indicator">
+    <span id="page-info">Página 1 de 7</span>
+</div>
 
-function showStep(index) {
-    steps.forEach(step => step.classList.remove("active"));
-    steps[index].classList.add("active");
+<script>
+const container = document.getElementById('secoes-container');
+const form = document.querySelector('form');
+let currentStep = 0;
+const totalSecos = 7;
+const secoes = [
+    'secoes/01-identificacao.html',
+    'secoes/02-cadastro.html',
+    'secoes/03-inspecao.html',
+    'secoes/04-licenciamento.html',
+    'secoes/05-investigacao.html',
+    'secoes/06-acoes-educativas.html',
+    'secoes/07-outros.html'
+];
+
+// Carrega todas as seções
+async function carregarSecoes() {
+    for (const secao of secoes) {
+        try {
+            const response = await fetch(secao);
+            const html = await response.text();
+            container.insertAdjacentHTML('beforeend', html);
+        } catch (error) {
+            console.error(`Erro ao carregar ${secao}:`, error);
+        }
+    }
+    inicializarPaginacao();
 }
 
-document.querySelectorAll(".next").forEach(btn => {
-    btn.addEventListener("click", () => {
-        if (currentStep < steps.length - 1) {
-            currentStep++;
-            showStep(currentStep);
-        }
-    });
-});
+function inicializarPaginacao() {
+    const steps = document.querySelectorAll('.step');
+    showStep(0);
 
-document.querySelectorAll(".prev").forEach(btn => {
-    btn.addEventListener("click", () => {
-        if (currentStep > 0) {
-            currentStep--;
-            showStep(currentStep);
+    document.querySelectorAll('.next').forEach(btn =>
+        btn.onclick = (e) => {
+            e.preventDefault();
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+            }
         }
-    });
-});
+    );
+
+    document.querySelectorAll('.prev').forEach(btn =>
+        btn.onclick = (e) => {
+            e.preventDefault();
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+    );
+}
+
+function showStep(i) {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(s => s.classList.remove('active'));
+    if (steps[i]) {
+        steps[i].classList.add('active');
+        window.scrollTo(0, 0);
+        atualizarIndicador(i, steps.length);
+    }
+}
+
+function atualizarIndicador(pagina, total) {
+    document.getElementById('page-info').textContent = `Página ${pagina + 1} de ${total}`;
+}
+
+// Inicia quando a página carrega
+window.addEventListener('DOMContentLoaded', carregarSecoes);
 </script>
 
 </body>
