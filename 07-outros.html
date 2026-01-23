@@ -1,0 +1,117 @@
+<style>
+.step {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+h2 {
+    border-left: 5px solid #0077ff;
+    padding-left: 10px;
+    margin-top: 0;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #0077ff;
+    box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.next {
+    background: #0077ff;
+    color: white;
+}
+
+.next:hover {
+    background: #0056cc;
+}
+
+.prev {
+    background: #999;
+    color: white;
+}
+
+.prev:hover {
+    background: #777;
+}
+
+.submit {
+    background: #28a745;
+    color: white;
+    width: 100%;
+}
+
+.submit:hover {
+    background: #218838;
+}
+</style>
+
+<!-- SEÇÃO 7 · OUTROS -->
+<div class="step" data-section="7">
+<h2>Outros</h2>
+
+<label>Informe a quantidade de Análises de Projetos Básicos de Arquitetura - 01.2.01.006-4</label>
+<input type="number" name="Analise_Projetos_Arquitetura" min="0" value="0">
+
+<label>Informe a quantidade de Aprovação de Projetos Básicos de Arquitetura - 01.2.01.019-6</label>
+<input type="number" name="Aprovacao_Projetos_Arquitetura" min="0" value="0">
+
+<label>Informe a quantidade de Recebimento de  Denuncia / Reclamação - 01.2.01.023-4</label>
+<input type="number" name="Recebimento_Denuncia_Reclamacao" min="0" value="0">
+
+<label>Informe a quantidade de Atendimento de  Denuncia / Reclamação - 01.2.01.024-2</label>
+<input type="number" name="Atendimento_Denuncia_Reclamacao" min="0" value="0">
+
+<label>Informe a quantidade de Instauração de Processos Administrativos Sanitários - 01.2.01.052-8</label>
+<input type="number" name="Instauracao_Processos_Administrativos_Sanitarios" min="0" value="0">
+
+<label>Informe a quantidade de Conclusão de Processos Administrativos Sanitários - 01.2.01.053-6</label>
+<input type="number" name="Conclusao_Processos_Administrativos_Sanitarios" min="0" value="0">
+
+<label>Informe a quantidade de Fiscalização do uso de produtos fumigeros, derivados do tabaco em ambientes coletivos fechados, públicos ou privados - 01.2.01.048</label>
+<input type="number" name="Fiscalizacao_Produtos_Fumigeros_Tabaco" min="0" value="0">
+
+<label>Informe a quantidade de Laudo de Análise Laboratorial do Programa de Monitoramento de Alimentos recebidos pela Vigilância Sanitária - 01.2.01.049-8</label>
+<input type="number" name="Laudo_Analise_Laboratorial" min="0" value="0">
+
+<button type="submit" class="submit">Enviar BPA</button>
+</div>

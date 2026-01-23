@@ -1,0 +1,113 @@
+<style>
+.step {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+h2 {
+    border-left: 5px solid #0077ff;
+    padding-left: 10px;
+    margin-top: 0;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #0077ff;
+    box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.next {
+    background: #0077ff;
+    color: white;
+}
+
+.next:hover {
+    background: #0056cc;
+}
+
+.prev {
+    background: #999;
+    color: white;
+}
+
+.prev:hover {
+    background: #777;
+}
+</style>
+
+<!-- SEÇÃO 4 · LICENCIAMENTO -->
+<div class="step" data-section="4">
+<h2>Licenciamento</h2>
+
+<label>Licenciamento de Estabelecimentos Sujeitos a Vigilancia Sanitária sem outra classificação  - 01.2.01.018-8</label>
+<input type="number" name="Lic_Estab" min="0" value="0">
+
+<label>Licenciamento Sanitário de Instituições de Longa Permanencia de Idosos  - 01.2.01.029=3</label>
+<input type="number" name="Lic_Idoso" min="0" value="0">
+
+<label>Licenciamento Sanitário de Hospitais  - 01.2.01.026-9</label>
+<input type="number" name="Lic_Hospital" min="0" value="0">
+
+<label>Licenciamento Sanitário de Industria de  Medicamentos  - 01.2.01.032-3</label>
+<input type="number" name="Lic_Industria_Medicamentos" min="0" value="0">
+
+<label>Licenciamento de  Estabelecimentos de serviço de Alimentação - 01.2.01.047-1</label>
+<input type="number" name="Lic_Alimentacao" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços de Diagnostico e Tratamento de Cancer de Colo de Utero e de Mama - 01.2.01.035-8</label>
+<input type="number" name="Lic_Servicos_Diagnostico_Cancer" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços Hospitalares de Parto e atenção a Criança - 01.2.01.038-2</label>
+<input type="number" name="Lic_Servicos_Hospitalares_Parto" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços Hospitalares de Hemoterapia - 01.2.01.041-2</label>
+<input type="number" name="Lic_Hemoterapia" min="0" value="0">
+
+<label>Licenciamento Sanitario  de Serviços Hospitalares de Terapia Renal Substitutiva - 01.2.01.044-7</label>
+<input type="number" name="Lic_Servicos_Hospitalares_Terapia_Renal" min="0" value="0">
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>

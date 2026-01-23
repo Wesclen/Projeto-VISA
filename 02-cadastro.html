@@ -1,0 +1,119 @@
+<style>
+.step {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+h2 {
+    border-left: 5px solid #0077ff;
+    padding-left: 10px;
+    margin-top: 0;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #0077ff;
+    box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 10px;
+}
+
+button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.next {
+    background: #0077ff;
+    color: white;
+}
+
+.next:hover {
+    background: #0056cc;
+}
+
+.prev {
+    background: #999;
+    color: white;
+}
+
+.prev:hover {
+    background: #777;
+}
+</style>
+
+<!-- SEÇÃO 2 · CADASTRO -->
+<div class="step" data-section="2">
+<h2>Cadastro</h2>
+
+<label>Cadastro de Estabelecimentos sujeitos a Vigilância Sanitária sem outra classificação - 01.02.01.007-2</label>
+<input type="number" name="Cad_Estab_VISA" min="0" value="0">
+
+<label>Cadastro de Instituições de Longa Permanencia para Idosos - 01.02.01.027-7</label>
+<input type="number" name="Cad_ILPI" min="0" value="0">
+
+<label>Cadastro de hospitais</label>
+<input type="number" name="Cad_Hospitais" min="0" value="0">
+
+<label>Cadastro de Industrias de Medicamentos - 01.02.01.030-7</label>
+<input type="number" name="Cad_Industrias_Medicamentos" min="0" value="0">
+
+<label>Cadastro de Industrias de Insumos Farmaceuticos - 01.02.01.054-4</label>
+<input type="number" name="Cad_Industrias_Insumos_Farmaceuticos" min="0" value="0">
+
+<label>Cadastro de Industrias de Produtos para a Saúde - 01.02.01.055-2</label>
+<input type="number" name="Cad_Industrias_Produtos_Saude" min="0" value="0">
+
+<label>Cadastro de Estabelecimentos de Serviço de Alimentação - 01.02.01.045-5</label>
+<input type="number" name="Cad_Alimentacao" min="0" value="0">
+
+<label>Cadastro de Serviços de Diagnóstico e Tratamento do Cancer de Colo de Utero e Mama - 01.02.01.033-1</label>
+<input type="number" name="Cad_Servicos_Diagnostico_Cancer" min="0" value="0">
+
+<label>Cadastro de Serviços de Hemoterapia - 01.2.01.039-0</label>
+<input type="number" name="Cad_Servicos_Hemoterapia" min="0" value="0">
+
+<label>Cadastro de Serviços de Terapia Renal Substitutiva - 01.2.01.042-0</label>
+<input type="number" name="Cad_Servicos_Terapia_Renal" min="0" value="0">
+
+<label>Exclusão de Cadastro de Estabelecimentos sujeitos a Vigilância Sanitária com atividades encerradas - 01.2.01.016-1</label>
+<input type="number" name="Cad_Exclusao_Estabelecimentos" min="0" value="0">
+
+<div class="buttons">
+    <button type="button" class="prev">Voltar</button>
+    <button type="button" class="next">Próximo</button>
+</div>
+</div>
