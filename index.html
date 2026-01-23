@@ -30,14 +30,13 @@ h2 {
 label {
     font-weight: bold;
     display: block;
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
 input, select {
     width: 100%;
     padding: 8px;
-    margin-top: 5px;
-    box-sizing: border-box;
+    margin: 6px 0 14px;
 }
 
 .buttons {
@@ -47,22 +46,15 @@ input, select {
 }
 
 button {
-    padding: 10px 25px;
+    padding: 10px 22px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .next { background: #0077ff; color: white; }
-.prev { background: #999; color: white; }
+.prev { background: #ccc; }
 .submit { background: #28a745; color: white; width: 100%; }
-
-.page-indicator {
-    text-align: center;
-    margin-top: 20px;
-    color: #666;
-    font-size: 14px;
-}
 </style>
 </head>
 
@@ -70,90 +62,101 @@ button {
 
 <form action="https://api.sheetmonkey.io/form/wzWe4jH5d9aZ2Dx3GJKqUk" method="POST">
 
+<input type="hidden" name="Created At" value="x-sheetmonkey-current-date-time">
 <input type="hidden" name="redirect" value="sucesso.html">
 
-<!-- Container para carregar as seções dinamicamente -->
-<div id="secoes-container"></div>
-
-
+<div id="sections"></div>
 
 </form>
 
-<div class="page-indicator">
-    <span id="page-info">Página 1 de 7</span>
-</div>
-
 <script>
-const container = document.getElementById('secoes-container');
-const form = document.querySelector('form');
-let currentStep = 0;
-const totalSecos = 7;
-const secoes = [
-    'secoes/01-identificacao.html',
-    'secoes/02-cadastro.html',
-    'secoes/03-inspecao.html',
-    'secoes/04-licenciamento.html',
-    'secoes/05-investigacao.html',
-    'secoes/06-acoes-educativas.html',
-    'secoes/07-outros.html'
+const sectionFiles = [
+    '../sessoes/00-intro.html',
+    '../sessoes/01-identificacao.html',
+    '../sessoes/02-cadastro.html',
+    '../sessoes/03-inspecao.html',
+    '../sessoes/04-licenciamento.html',
+    '../sessoes/05-investigacao.html',
+    '../sessoes/06-acoes-educativas.html',
+    '../sessoes/07-outros.html'
 ];
 
-// Carrega todas as seções
-async function carregarSecoes() {
-    for (const secao of secoes) {
+async function loadSections() {
+    const container = document.getElementById('sections');
+
+    for (const file of sectionFiles) {
         try {
-            const response = await fetch(secao);
+            const response = await fetch(file);
+            if (!response.ok) {
+                console.error(`Erro ao carregar: ${file}`);
+                continue;
+            }
             const html = await response.text();
             container.insertAdjacentHTML('beforeend', html);
-        } catch (error) {
-            console.error(`Erro ao carregar ${secao}:`, error);
+        } catch (err) {
+            console.error(`Falha no fetch de ${file}`, err);
         }
     }
-    inicializarPaginacao();
-}
 
-function inicializarPaginacao() {
-    const steps = document.querySelectorAll('.step');
-    showStep(0);
+    const steps = document.querySelectorAll(".step");
+    let currentStep = 0;
 
-    document.querySelectorAll('.next').forEach(btn =>
-        btn.onclick = (e) => {
-            e.preventDefault();
+    function showStep(index) {
+        steps.forEach(s => s.classList.remove("active"));
+        steps[index].classList.add("active");
+
+        // Bloqueia submit fora do último passo
+        const submitBtn = document.querySelector(".submit");
+        if (submitBtn) {
+            submitBtn.style.display = (index === steps.length - 1) ? "block" : "none";
+        }
+    }
+
+    showStep(currentStep);
+
+    document.querySelectorAll(".next").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const fields = steps[currentStep].querySelectorAll(
+                "input, select, textarea"
+            );
+
+            for (let field of fields) {
+                if (!field.checkValidity()) {
+                    field.reportValidity();
+                    if (currentStep === 1) { // Seção de identificação
+                        alert("Por favor, preencha todos os campos de identificação antes de prosseguir.");
+                    }
+                    return;
+                }
+            }
+
             if (currentStep < steps.length - 1) {
                 currentStep++;
                 showStep(currentStep);
             }
-        }
-    );
+        });
+    });
 
-    document.querySelectorAll('.prev').forEach(btn =>
-        btn.onclick = (e) => {
-            e.preventDefault();
+    document.querySelectorAll(".prev").forEach(btn => {
+        btn.addEventListener("click", () => {
             if (currentStep > 0) {
                 currentStep--;
                 showStep(currentStep);
             }
+        });
+    });
+
+    // Impede submit via Enter antes do último passo
+    document.querySelector("form").addEventListener("keydown", e => {
+        if (e.key === "Enter" && currentStep !== steps.length - 1) {
+            e.preventDefault();
         }
-    );
+    });
 }
 
-function showStep(i) {
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(s => s.classList.remove('active'));
-    if (steps[i]) {
-        steps[i].classList.add('active');
-        window.scrollTo(0, 0);
-        atualizarIndicador(i, steps.length);
-    }
-}
-
-function atualizarIndicador(pagina, total) {
-    document.getElementById('page-info').textContent = `Página ${pagina + 1} de ${total}`;
-}
-
-// Inicia quando a página carrega
-window.addEventListener('DOMContentLoaded', carregarSecoes);
+loadSections();
 </script>
+
 
 </body>
 </html>
