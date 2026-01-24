@@ -71,15 +71,16 @@ button {
 
 <script>
 const sectionFiles = [
-    '../sessoes/00-intro.html',
-    '../sessoes/01-identificacao.html',
-    '../sessoes/02-cadastro.html',
-    '../sessoes/03-inspecao.html',
-    '../sessoes/04-licenciamento.html',
-    '../sessoes/05-investigacao.html',
-    '../sessoes/06-acoes-educativas.html',
-    '../sessoes/07-outros.html'
+  "github/00-intro.html",
+  "github/01-identificacao.html",
+  "github/02-cadastro.html",
+  "github/03-inspecao.html",
+  "github/04-licenciamento.html",
+  "github/05-investigacao.html",
+  "github/06-acoes-educativas.html",
+  "github/07-outros.html",
 ];
+
 
 async function loadSections() {
     const container = document.getElementById('sections');
@@ -98,12 +99,15 @@ async function loadSections() {
         }
     }
 
+    // Inicializa os controles APÓS carregar os arquivos
     const steps = document.querySelectorAll(".step");
     let currentStep = 0;
 
     function showStep(index) {
         steps.forEach(s => s.classList.remove("active"));
-        steps[index].classList.add("active");
+        if (steps[index]) {
+            steps[index].classList.add("active");
+        }
 
         // Bloqueia submit fora do último passo
         const submitBtn = document.querySelector(".submit");
