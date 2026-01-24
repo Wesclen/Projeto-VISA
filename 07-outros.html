@@ -44,6 +44,7 @@ input:focus, select:focus {
     justify-content: space-between;
     margin-top: 30px;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 button {
@@ -54,6 +55,18 @@ button {
     font-size: 16px;
     font-weight: bold;
     transition: background 0.3s;
+}
+.aviso-redirecionamento{
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: #f0f7ff;
+  border-left: 3px solid #0077ff;
+  color: #555;
+  font-size: 13px;
+  border-radius: 3px;
+
+  width: 100%;
+  flex-basis: 100%; 
 }
 
 .next {
@@ -115,14 +128,17 @@ button {
 <input type="number" name="laudo_alimentos" min="0" value="0">
 
 <div class="buttons">
-    <button type="button" class="prev">Voltar</button>
+  <button type="button" class="prev">Voltar</button>
 
-<button type="submit" class="submit">Enviar BPA</button>
-    
-    <div id="aviso-redirecionamento" style="margin-top: 15px; padding: 10px 15px; background-color: #f0f7ff; border-left: 3px solid #0077ff; color: #555; font-size: 13px; border-radius: 3px;">
+  <button type="submit" class="submit" aria-describedby="aviso-redirecionamento">
+    Enviar BPA
+  </button>
+
+  <div id="aviso-redirecionamento" class="aviso-redirecionamento">
     <strong>ℹ️ Aviso:</strong> Após enviar o formulário, você será direcionado ao início do site.
+  </div>
 </div>
-</div>
+
 
 
 
