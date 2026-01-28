@@ -81,88 +81,87 @@ const sectionFiles = [
   "./07-outros.html",
 ];
 
-
-
 async function loadSections() {
-    const container = document.getElementById('sections');
+  const container = document.getElementById('sections');
 
-    for (const file of sectionFiles) {
-        try {
-            const response = await fetch(file);
-            if (!response.ok) {
-                console.error(`Erro ao carregar: ${file}`);
-                continue;
-            }
-            const html = await response.text();
-            container.insertAdjacentHTML('beforeend', html);
-        } catch (err) {
-            console.error(`Falha no fetch de ${file}`, err);
-        }
+  for (const file of sectionFiles) {
+    try {
+      const response = await fetch(file);
+      if (!response.ok) {
+        console.error(`Erro ao carregar: ${file}`);
+        continue;
+      }
+      const html = await response.text();
+      container.insertAdjacentHTML('beforeend', html);
+    } catch (err) {
+      console.error(`Falha no fetch de ${file}`, err);
+    }
+  }
+
+  const steps = document.querySelectorAll(".step");
+  let currentStep = 0;
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }
+
+  function showStep(index) {
+    steps.forEach(s => s.classList.remove("active"));
+    if (steps[index]) {
+      steps[index].classList.add("active");
     }
 
-    // Inicializa os controles APÓS carregar os arquivos
-    const steps = document.querySelectorAll(".step");
-    let currentStep = 0;
-
-    function showStep(index) {
-        steps.forEach(s => s.classList.remove("active"));
-        if (steps[index]) {
-            steps[index].classList.add("active");
-        }
-
-        // Bloqueia submit fora do último passo
-        const submitBtn = document.querySelector(".submit");
-        if (submitBtn) {
-            submitBtn.style.display = (index === steps.length - 1) ? "block" : "none";
-        }
+    const submitBtn = document.querySelector(".submit");
+    if (submitBtn) {
+      submitBtn.style.display = (index === steps.length - 1) ? "block" : "none";
     }
+  }
 
-    showStep(currentStep);
+  showStep(currentStep);
 
-    document.querySelectorAll(".next").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const fields = steps[currentStep].querySelectorAll(
-                "input, select, textarea"
-            );
+  document.querySelectorAll(".next").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const fields = steps[currentStep].querySelectorAll("input, select, textarea");
 
-            for (let field of fields) {
-                if (!field.checkValidity()) {
-                    field.reportValidity();
-                    if (currentStep === 1) { // Seção de identificação
-                        alert("Por favor, preencha todos os campos de identificação antes de prosseguir.");
-                    }
-                    return;
-                }
-            }
-
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                showStep(currentStep);
-            }
-        });
-    });
-
-    document.querySelectorAll(".prev").forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (currentStep > 0) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        });
-    });
-
-    // Impede submit via Enter antes do último passo
-    document.querySelector("form").addEventListener("keydown", e => {
-        if (e.key === "Enter" && currentStep !== steps.length - 1) {
-            e.preventDefault();
+      for (let field of fields) {
+        if (!field.checkValidity()) {
+          field.reportValidity();
+          if (currentStep === 1) {
+            alert("Por favor, preencha todos os campos de identificação antes de prosseguir.");
+          }
+          return;
         }
+      }
+
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        showStep(currentStep);
+        scrollToTop(); // <-- ADICIONADO
+      }
     });
+  });
+
+  document.querySelectorAll(".prev").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+        scrollToTop(); // <-- ADICIONADO
+      }
+    });
+  });
+
+  document.querySelector("form").addEventListener("keydown", e => {
+    if (e.key === "Enter" && currentStep !== steps.length - 1) {
+      e.preventDefault();
+    }
+  });
 }
 
 loadSections();
 </script>
 
 
+
 </body>
 </html>
-
