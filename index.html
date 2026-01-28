@@ -63,7 +63,7 @@ button {
 <form action="https://api.sheetmonkey.io/form/wzWe4jH5d9aZ2Dx3GJKqUk" method="POST">
 
 <input type="hidden" name="Created At" value="x-sheetmonkey-current-date-time">
-<input type="hidden" name="x-sheetmonkey-redirect" id="sm-redirect">
+<input type="hidden" name="redirect" value="sucesso.html">
 
 <div id="sections"></div>
 
@@ -159,13 +159,9 @@ async function loadSections() {
 }
 
 loadSections();
-document.getElementById("sm-redirect").value =
-  new URL("sucesso.html", window.location.href).toString();
-    
 </script>
 
 
 
 </body>
 </html>
-
