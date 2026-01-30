@@ -21,6 +21,7 @@
   .btn-green:hover{background:#1f7e34;}
   .btn-gray{background:#e0e0e0;color:#111;}
   .btn-gray:hover{background:#d1d1d1;}
+  button:disabled{opacity:.6;cursor:not-allowed;}
 
   .msg{margin-top:10px;color:#b00020;font-size:13px;}
   #statusUser{margin-top:10px;color:#333;font-size:13px;}
@@ -54,6 +55,8 @@
     <div id="painelBox" style="display:none;">
       <div class="row">
         <button type="button" id="btnRecarregar" class="btn-green">Recarregar dados</button>
+        <button type="button" id="btnPrev" class="btn-gray">Anterior</button>
+        <button type="button" id="btnNext" class="btn-gray">Próxima</button>
         <a class="btn btn-gray" href="index.html">Voltar ao formulário</a>
       </div>
 
@@ -71,9 +74,10 @@
 
   const KEY_OK = "bpa_gerencia_ok";
 
-  // paginação (fixa por enquanto)
+  // paginação
   let page = 1;
   let limit = 50;
+  let totalPages = 1;
 
   function escapeHtml(s) {
     return String(s ?? "")
@@ -84,7 +88,18 @@
       .replaceAll("'", "&#039;");
   }
 
-  function jsonp(url, { timeoutMs = 15000 } = {}) {
+  function setNavDisabled(disabled) {
+    document.getElementById("btnRecarregar").disabled = disabled;
+    document.getElementById("btnPrev").disabled = disabled;
+    document.getElementById("btnNext").disabled = disabled;
+  }
+
+  function updateNavButtons() {
+    document.getElementById("btnPrev").disabled = (page <= 1);
+    document.getElementById("btnNext").disabled = (page >= totalPages);
+  }
+
+  function jsonp(url, { timeoutMs = 20000 } = {}) {
     return new Promise((resolve, reject) => {
       const cbName = "cbUser_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
       const sep = url.includes("?") ? "&" : "?";
@@ -123,6 +138,28 @@
     document.getElementById("loginBox").style.display = "block";
   }
 
+  function filterEmptyColumns(head, rows) {
+    // Mantém colunas que tenham algum valor no cabeçalho OU em alguma célula da página atual
+    const colsToKeep = [];
+    for (let j = 0; j < head.length; j++) {
+      let hasValue = String(head[j] ?? "").trim() !== "";
+      if (!hasValue) {
+        for (let i = 0; i < rows.length; i++) {
+          const v = rows[i][j];
+          if (v !== null && v !== undefined && String(v).trim() !== "") {
+            hasValue = true;
+            break;
+          }
+        }
+      }
+      if (hasValue) colsToKeep.push(j);
+    }
+
+    const head2 = colsToKeep.map(j => head[j]);
+    const rows2 = rows.map(r => colsToKeep.map(j => r[j]));
+    return { head2, rows2, kept: colsToKeep.length, total: head.length };
+  }
+
   async function carregarTabela() {
     const status = document.getElementById("statusUser");
     const wrap = document.getElementById("tabelaWrapUser");
@@ -134,20 +171,31 @@
 
     status.textContent = "Carregando...";
     wrap.innerHTML = "";
+    setNavDisabled(true);
 
     try {
       const url = `${WEBAPP_URL}?senha=${encodeURIComponent(SENHA)}&page=${page}&limit=${limit}`;
-      const data = await jsonp(url, { timeoutMs: 15000 });
+      const data = await jsonp(url, { timeoutMs: 20000 });
 
       if (!data || !data.ok) {
         status.textContent = data?.erro || "Erro";
         return;
       }
 
-      const head = data.head || [];
-      const rows = data.rows || [];
+      let head = data.head || [];
+      let rows = data.rows || [];
 
-      status.textContent = `Página ${data.page}/${data.totalPages} — Linhas nesta página: ${rows.length} — Total: ${data.totalRows}`;
+      // atualiza paginação com o que veio do servidor
+      page = Number(data.page || page);
+      totalPages = Number(data.totalPages || 1);
+
+      // NOVO: remove colunas totalmente vazias (sobras à direita)
+      const filtered = filterEmptyColumns(head, rows);
+      head = filtered.head2;
+      rows = filtered.rows2;
+
+      status.textContent =
+        `Página ${data.page}/${data.totalPages} — Linhas nesta página: ${rows.length} — Total: ${data.totalRows} — Colunas exibidas: ${filtered.kept}/${filtered.total}`;
 
       wrap.innerHTML = `
         <table>
@@ -160,16 +208,18 @@
     } catch (err) {
       status.textContent = "Falha: " + (err?.message || err);
       console.error(err);
+    } finally {
+      setNavDisabled(false);
+      updateNavButtons();
     }
   }
 
-  // Se já logou nesta aba, abre o painel e carrega automaticamente
+  // Auto abre se já logou nesta aba
   if (sessionStorage.getItem(KEY_OK) === "1") {
     showPainel();
     carregarTabela();
   }
 
-  // Entrar -> abre painel e carrega automaticamente
   document.getElementById("btnEntrar").addEventListener("click", () => {
     const inp = document.getElementById("senhaPainel");
     const msg = document.getElementById("msgLogin");
@@ -184,14 +234,27 @@
     sessionStorage.setItem(KEY_OK, "1");
     inp.value = "";
     showPainel();
+    page = 1;
     carregarTabela();
   });
 
-  // Botão: recarregar
   document.getElementById("btnRecarregar").addEventListener("click", () => {
     carregarTabela();
   });
-</script>
 
+  document.getElementById("btnPrev").addEventListener("click", () => {
+    if (page > 1) {
+      page--;
+      carregarTabela();
+    }
+  });
+
+  document.getElementById("btnNext").addEventListener("click", () => {
+    if (page < totalPages) {
+      page++;
+      carregarTabela();
+    }
+  });
+</script>
 </body>
 </html>
