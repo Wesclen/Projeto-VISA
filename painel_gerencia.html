@@ -79,6 +79,9 @@
   let limit = 50;
   let totalPages = 1;
 
+  // Linha (rótulo) a esconder no modo transposto
+  const HIDE_ROW_LABELS = new Set(["Data_Competencia"]);
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replaceAll("&", "&amp;")
@@ -139,7 +142,6 @@
   }
 
   function filterEmptyColumns(head, rows) {
-    // Mantém colunas que tenham algum valor no cabeçalho OU em alguma célula da página atual
     const colsToKeep = [];
     for (let j = 0; j < head.length; j++) {
       let hasValue = String(head[j] ?? "").trim() !== "";
@@ -158,6 +160,62 @@
     const head2 = colsToKeep.map(j => head[j]);
     const rows2 = rows.map(r => colsToKeep.map(j => r[j]));
     return { head2, rows2, kept: colsToKeep.length, total: head.length };
+  }
+
+  // Formata datas em pt-BR
+  const fmtDate = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Porto_Velho" });
+  const fmtDateTime = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Porto_Velho",
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+    hour12: false
+  });
+
+  function tryParseDate(value) {
+    const s = String(value ?? "").trim();
+    if (!s) return null;
+
+    // ISO (ex.: 2026-01-30T00:00:00.000Z)
+    if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d;
+    }
+
+    // Padrão do SheetMonkey no cabeçalho (ex.: 01/30/2026 07:23 AM)
+    // Deixa o browser tentar parsear (geralmente funciona por ser en-US)
+    if (/\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d;
+    }
+
+    return null;
+  }
+
+  function formatCell(value, rowLabel, colHeader) {
+    // esconder linha Data_Competencia (e outras que você quiser)
+    if (rowLabel && HIDE_ROW_LABELS.has(rowLabel)) return null;
+
+    // Formatar cabeçalhos de data (colunas)
+    if (colHeader === "__HEADER__") {
+      const d = tryParseDate(value);
+      if (d) return fmtDateTime.format(d);
+      return String(value ?? "");
+    }
+
+    // Formatar valores de Data_Competencia caso você resolva mostrar futuramente
+    if (rowLabel === "Data_Competencia") {
+      const d = tryParseDate(value);
+      if (d) return fmtDate.format(d); // 30/01/2026
+      return String(value ?? "");
+    }
+
+    // padrão
+    const d = tryParseDate(value);
+    if (d && typeof value === "string" && value.includes("T")) {
+      // ISO -> só data
+      return fmtDate.format(d);
+    }
+    return String(value ?? "");
   }
 
   async function carregarTabela() {
@@ -185,23 +243,41 @@
       let head = data.head || [];
       let rows = data.rows || [];
 
-      // atualiza paginação com o que veio do servidor
       page = Number(data.page || page);
       totalPages = Number(data.totalPages || 1);
 
-      // NOVO: remove colunas totalmente vazias (sobras à direita)
+      // Remove colunas totalmente vazias (sobras à direita)
       const filtered = filterEmptyColumns(head, rows);
       head = filtered.head2;
       rows = filtered.rows2;
+
+      // Remove linhas por rótulo (ex.: Data_Competencia)
+      // Seu layout é transposto: a primeira coluna é o "rótulo" da linha
+      rows = rows.filter(r => {
+        const label = String(r?.[0] ?? "").trim();
+        return label && !HIDE_ROW_LABELS.has(label);
+      });
+
+      // Formata cabeçalhos (datas em pt-BR)
+      const headFmt = head.map(h => escapeHtml(formatCell(h, null, "__HEADER__")));
 
       status.textContent =
         `Página ${data.page}/${data.totalPages} — Linhas nesta página: ${rows.length} — Total: ${data.totalRows} — Colunas exibidas: ${filtered.kept}/${filtered.total}`;
 
       wrap.innerHTML = `
         <table>
-          <thead><tr>${head.map(h => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead>
+          <thead><tr>${headFmt.map(h => `<th>${h}</th>`).join("")}</tr></thead>
           <tbody>
-            ${rows.map(r => `<tr>${r.map(c => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`).join("")}
+            ${rows.map(r => {
+              const rowLabel = String(r?.[0] ?? "").trim();
+              const tds = r.map((cell, idx) => {
+                const colHeader = head[idx];
+                const v = formatCell(cell, rowLabel, colHeader);
+                // Se formatCell retornar null, é porque a linha deveria estar oculta (já filtramos), mas garante
+                return `<td>${escapeHtml(v ?? "")}</td>`;
+              }).join("");
+              return `<tr>${tds}</tr>`;
+            }).join("")}
           </tbody>
         </table>
       `;
