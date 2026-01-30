@@ -1,64 +1,148 @@
 <style>
 .step {
-    animation: fadeIn 0.3s ease-in;
+  animation: fadeIn 0.3s ease-in;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 h2 {
-    border-left: 5px solid #0077ff;
-    padding-left: 10px;
-    margin-top: 0;
-    color: #333;
+  border-left: 5px solid #0077ff;
+  padding-left: 10px;
+  margin-top: 0;
+  color: #333;
 }
 
 label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
 }
 
 input, select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
 }
 
 .buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-    gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 10px;
 }
 
 button {
-    padding: 12px 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .next {
-    background: #0077ff;
-    color: white;
+  background: #0077ff;
+  color: white;
 }
 
 .next:hover {
-    background: #0056cc;
+  background: #0056cc;
+}
+
+/* --- botão Painel Gerência (mesma cor do next) --- */
+.btn-gerencia {
+  background: #0077ff;
+  color: #fff;
+}
+
+.btn-gerencia:hover {
+  background: #0056cc;
+}
+
+.aviso-gerencia {
+  display: block;
+  margin-top: 0;         /* fica controlado pelo gap do container */
+  font-size: 12px;
+  color: #666;
+}
+
+/* --- NOVO: garante que o aviso fique embaixo do botão da gerência --- */
+.gerencia-cta{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* mantém alinhado à direita junto do botão */
+  gap: 6px;
+}
+
+/* ---- Gerência ---- */
+.gerencia {
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid #dbe7ff;
+  background: #f7fbff;
+  border-radius: 6px;
+}
+
+.gerencia summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.gerencia .acoes {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#tabelaWrapUser {
+  margin-top: 12px;
+  overflow: auto;
+  max-height: 60vh;
+  background: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+}
+
+#tabelaWrapUser table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#tabelaWrapUser th, #tabelaWrapUser td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 13px;
+}
+
+#tabelaWrapUser th {
+  background: #f0f7ff;
+  position: sticky;
+  top: 0;
 }
 </style>
 
 <!-- INTRO -->
 <div class="step" data-section="0">
-<h2>Introdução</h2>
-<p><strong>Formulário BPA mensal GTVISA</strong></p>
-<p>Formulario para informar as atividades de Vigilância Sanitária no Boletim de Produção Ambulatorial.</p>
-<div class="buttons">
-    <button type="button" class="next">Começar</button>
-</div>
+  <h2>Introdução</h2>
+  <p><strong>Formulário BPA mensal GTVISA</strong></p>
+  <p>Formulario para informar as atividades de Vigilância Sanitária no Boletim de Produção Ambulatorial.</p>
+
+  <div class="buttons">
+    <button type="button" class="next">Alimentar BPA</button>
+
+    <div class="gerencia-cta">
+      <button type="button" id="btnPainelGerencia" class="btn-gerencia">
+        Painel gerência
+      </button>
+
+      <small class="aviso-gerencia">
+        Somente a gerência pode acessar. Para entrar, é necessário informar uma senha.
+      </small>
+    </div>
+  </div>
 </div>
