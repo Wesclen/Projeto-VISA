@@ -64,15 +64,16 @@ button {
 
 <script>
 const sectionFiles = [
-  "./sessoes/00-intro.html",
-  "./sessoes/01-identificacao.html",
-  "./sessoes/02-cadastro.html",
-  "./sessoes/03-inspecao.html",
-  "./sessoes/04-licenciamento.html",
-  "./sessoes/05-investigacao.html",
-  "./sessoes/06-acoes-educativas.html",
-  "./sessoes/07-outros.html",
+  "./00-intro.html",
+  "./01-identificacao.html",
+  "./02-cadastro.html",
+  "./03-inspecao.html",
+  "./04-licenciamento.html",
+  "./05-investigacao.html",
+  "./06-acoes-educativas.html",
+  "./07-outros.html",
 ];
+
 
 async function loadSections() {
   const container = document.getElementById('sections');
@@ -155,7 +156,7 @@ document.addEventListener("click", (e) => {
   if (!btn) return;
 
   e.preventDefault();
-  window.location.href = "painel_gerencia.html";
+  window.location.href = "./painel_gerencia.html";
 });
 
 /* Redirect do SheetMonkey (voltar pro início) */
@@ -169,4 +170,5 @@ loadSections();
 </script>
 </body>
 </html>
+
 
