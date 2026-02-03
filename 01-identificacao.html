@@ -79,13 +79,13 @@ button {
 <div class="step" data-section="1">
 <h2>Seção 1 · Identificação</h2>
 
-<label>Matrícula (9 dígitos)</label>
-<input type="text" name="Matricula"
-       pattern="\d{9}"
-       minlength="9"
-       maxlength="9"
-       required
+<label>Matrícula</label>
+<input type="text"
+       name="Matricula"
+       pattern="\d+"
+       inputmode="numeric"
        placeholder="Ex: 123456789">
+
 
 <label>E-mail</label>
 <input type="email" name="Email" required>
@@ -113,4 +113,5 @@ button {
     <button type="button" class="next">Próximo</button>
 </div>
 </div>
+
 
