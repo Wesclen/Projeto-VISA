@@ -88,7 +88,7 @@ button {
 
 
 <label>E-mail</label>
-<input type="email" name="Email" required>
+<input type="email" name="Email" required placeholder="">
 
 <label>Setor / Núcleo</label>
 <select name="Setor_Nucleo" required>
@@ -107,14 +107,29 @@ button {
 
 </select>
 
-<label>Data de competência</label>
-<input type="date" name="Data_Competencia" required>
+<label>Mês de competência</label>
+<select name="Mes_Competencia" required>
+  <option value="">Selecione</option>
+  <option value="01">Janeiro</option>
+  <option value="02">Fevereiro</option>
+  <option value="03">Março</option>
+  <option value="04">Abril</option>
+  <option value="05">Maio</option>
+  <option value="06">Junho</option>
+  <option value="07">Julho</option>
+  <option value="08">Agosto</option>
+  <option value="09">Setembro</option>
+  <option value="10">Outubro</option>
+  <option value="11">Novembro</option>
+  <option value="12">Dezembro</option>
+</select>
 
+
+<label>Ano de competência</label>
+<input type="text" name="Ano_Competencia" max="2030" placeholder="Ano" inputmode="numeric" maxlength="4" pattern="\d{4}" required>
 <div class="buttons">
+
     <span></span>
     <button type="button" class="next">Próximo</button>
 </div>
 </div>
-
-
-
