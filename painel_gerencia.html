@@ -116,7 +116,15 @@ th{
 
 <script>
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwhWlvzkIy_VvF0-oU-p_VI4NTB_prCQNAgYFAfRktzEMKTY5LQhd9niw5z-1nkSuLd5A/exec";
-const SENHA = "123";
+const SENHA_ACESSO = "123";
+
+const senhaDigitada = prompt("Digite a senha para acessar o painel:");
+
+if(senhaDigitada !== SENHA_ACESSO){
+  alert("Acesso negado.");
+  document.body.innerHTML = "";
+  throw new Error("Acesso bloqueado");
+}
 const LIMIT = 50;
 
 let HEAD = [];
