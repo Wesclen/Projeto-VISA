@@ -116,16 +116,16 @@ th{
 
 <script>
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwhWlvzkIy_VvF0-oU-p_VI4NTB_prCQNAgYFAfRktzEMKTY5LQhd9niw5z-1nkSuLd5A/exec";
-const SENHA_ACESSO = "123";
-
-const senhaDigitada = prompt("Digite a senha para acessar o painel:");
-
-if(senhaDigitada !== SENHA_ACESSO){
-  alert("Acesso negado.");
-  document.body.innerHTML = "";
-  throw new Error("Acesso bloqueado");
-}
+const SENHA = "123";
 const LIMIT = 50;
+
+const SENHA_CORRETA = "123";
+const senhaDigitada = prompt("Digite a senha:");
+
+if (senhaDigitada !== SENHA_CORRETA) {
+  document.body.innerHTML = "<h2>Acesso negado</h2>";
+  throw new Error("Bloqueado");
+}
 
 let HEAD = [];
 let DATA = [];
@@ -199,25 +199,46 @@ function aplicarFiltro(){
 
 /* CARREGAR */
 async function carregarTabela(){
-  statusUser.textContent="Carregando...";
+  statusUser.textContent = "Carregando...";
   DATA = [];
 
-  const first = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=1&limit=${LIMIT}`);
-  HEAD = first.head;
+  try {
 
-  DATA = [
-    HEAD,
-    ...first.rows
-  ];
+    const first = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=1&limit=${LIMIT}`);
 
-  for(let p=2;p<=first.totalPages;p++){
-    const d = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=${p}&limit=${LIMIT}`);
-    DATA.push(...d.rows);
+    // 🔥 TRATAMENTO DE ERRO
+    if (!first || !first.ok) {
+      statusUser.textContent = first?.erro || "Erro ao carregar dados";
+      return;
+    }
+
+    HEAD = first.head;
+
+    DATA = [
+      HEAD,
+      ...first.rows
+    ];
+
+    for (let p = 2; p <= first.totalPages; p++) {
+
+      const d = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=${p}&limit=${LIMIT}`);
+
+      if (!d || !d.ok) {
+        statusUser.textContent = d?.erro || "Erro ao carregar páginas";
+        return;
+      }
+
+      DATA.push(...d.rows);
+    }
+
+    renderTabela(DATA);
+    statusUser.textContent = `Registros carregados: ${DATA.length - 1}`;
+
+  } catch (err) {
+    statusUser.textContent = "Erro inesperado";
   }
-
-  renderTabela(DATA);
-  statusUser.textContent = `Registros carregados: ${DATA[0].length - 1}`;
 }
+
 
 btnRecarregar.onclick = carregarTabela;
 
