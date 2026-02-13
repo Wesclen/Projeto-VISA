@@ -12,7 +12,7 @@ body{
   padding:20px;
 }
 .card{
-  max-width:1200px;
+  max-width:1400px;
   margin:auto;
   background:#fff;
   padding:24px;
@@ -46,6 +46,7 @@ button,a.btn{
   display:flex;
   gap:10px;
   margin-top:12px;
+  align-items:center;
 }
 
 #filters select,
@@ -57,6 +58,7 @@ button,a.btn{
 #statusUser{
   margin-top:10px;
   font-size:13px;
+  color:#333;
 }
 
 #tabelaWrapUser{
@@ -83,6 +85,13 @@ th{
   background:#f0f7ff;
   position:sticky;
   top:0;
+  z-index:10;
+}
+
+/* Destaque para números não-zero */
+.valor-destaque{
+  font-weight:bold;
+  font-size:15px;
 }
 </style>
 </head>
@@ -93,13 +102,14 @@ th{
 
   <div class="row">
     <button id="btnRecarregar" class="btn-green">Recarregar dados</button>
-    <a href="index.html" class="btn btn-gray">Voltar ao formulário</a>
+    <a href="index-1.html" class="btn btn-gray">Voltar ao formulário</a>
   </div>
 
   <!-- FILTROS -->
   <div id="filters">
+    <label>Filtrar por:</label>
     <select id="campoFiltro">
-      <option value="Nome">Todos</option>
+      <option value="">Todos</option>
       <option value="Mes_Competencia">Mês</option>
       <option value="Ano_Competencia">Ano</option>
       <option value="Matricula">Matrícula</option>
@@ -107,7 +117,9 @@ th{
       <option value="Setor_Nucleo">Setor</option>
     </select>
 
-    <input id="filtroValor" placeholder="Digite para filtrar">
+    <input id="filtroValor" placeholder="Digite para filtrar...">
+    
+    <button id="btnLimparFiltro" class="btn-gray">Limpar</button>
   </div>
 
   <div id="statusUser"></div>
@@ -119,20 +131,22 @@ const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwhWlvzkIy_VvF0-oU-p
 const SENHA = "123";
 const LIMIT = 50;
 
+// 🔐 Verificação de senha
 const SENHA_CORRETA = "123";
-const senhaDigitada = prompt("Digite a senha:");
+const senhaDigitada = prompt("Digite a senha da gerência:");
 
 if (senhaDigitada !== SENHA_CORRETA) {
-  document.body.innerHTML = "<h2>Acesso negado</h2>";
-  throw new Error("Bloqueado");
+  document.body.innerHTML = "<div class='card'><h2 style='color:#d32f2f'>❌ Acesso negado</h2><p>Senha incorreta.</p></div>";
+  throw new Error("Acesso bloqueado");
 }
 
 let HEAD = [];
 let DATA = [];
+let DATA_ORIGINAL = [];
 
-/* JSONP */
+/* ========== JSONP ========== */
 function jsonp(url){
-  return new Promise(res=>{
+  return new Promise((res,rej)=>{
     const cb="cb"+Date.now()+Math.random().toString(36).slice(2);
     window[cb]=d=>{
       delete window[cb];
@@ -141,12 +155,39 @@ function jsonp(url){
     }
     const s=document.createElement("script");
     s.src=url+(url.includes("?")?"&":"?")+"callback="+cb;
+    s.onerror=()=>rej("Erro JSONP");
     document.body.appendChild(s);
   });
 }
 
-/* RENDER */
+/* ========== SUBSTITUIR 0 POR "-" ========== */
+function formatarValor(valor){
+  if(valor === 0 || valor === "0") return "-";
+  return valor ?? "";
+}
+
+/* ========== DESTACAR NÚMEROS NÃO-ZERO ========== */
+function aplicarDestaque(){
+  const cells = document.querySelectorAll('tbody td');
+  
+  cells.forEach(cell => {
+    const valor = cell.textContent.trim();
+    const numero = parseFloat(valor);
+    
+    // Se for número e diferente de 0
+    if (!isNaN(numero) && numero !== 0) {
+      cell.classList.add('valor-destaque');
+    }
+  });
+}
+
+/* ========== RENDER TABELA ========== */
 function renderTabela(data){
+  if(!data || data.length < 2){
+    tabelaWrapUser.innerHTML = "<p>Nenhum dado disponível</p>";
+    return;
+  }
+
   tabelaWrapUser.innerHTML = `
     <table>
       <thead>
@@ -154,93 +195,114 @@ function renderTabela(data){
       </thead>
       <tbody>
         ${data.slice(1).map(r=>`
-          <tr>${r.map(c=>`<td>${c ?? ""}</td>`).join("")}</tr>
+          <tr>${r.map(c=>`<td>${formatarValor(c)}</td>`).join("")}</tr>
         `).join("")}
       </tbody>
     </table>
   `;
+  
+  // Aplicar destaque após renderizar
+  aplicarDestaque();
 }
 
-/* FILTRO POR COLUNA */
+/* ========== FILTRO POR COLUNA ========== */
 function aplicarFiltro(){
   const campo = campoFiltro.value;
   const termo = filtroValor.value.trim().toLowerCase();
 
-  if(!termo){
-    renderTabela(DATA);
-    statusUser.textContent="";
+  if(!campo || !termo){
+    renderTabela(DATA_ORIGINAL);
+    statusUser.textContent=`Registros carregados: ${DATA_ORIGINAL.length - 1}`;
     return;
   }
 
-  const rowIndex = DATA.findIndex(r => r[0] === campo);
-  if(rowIndex === -1) return;
+  const rowIndex = DATA_ORIGINAL.findIndex(r => r[0] === campo);
+  
+  if(rowIndex === -1){
+    statusUser.textContent="Campo não encontrado";
+    return;
+  }
 
   const colunasValidas = [];
 
-  for(let c=1;c<DATA[rowIndex].length;c++){
-    const valor = String(DATA[rowIndex][c] ?? "").toLowerCase();
+  for(let c=1; c<DATA_ORIGINAL[rowIndex].length; c++){
+    const valor = String(DATA_ORIGINAL[rowIndex][c] ?? "").toLowerCase();
     if(valor.includes(termo)) colunasValidas.push(c);
   }
 
   if(colunasValidas.length === 0){
-    statusUser.textContent="Nenhum registro encontrado";
-    tabelaWrapUser.innerHTML="";
+    statusUser.textContent="❌ Nenhum registro encontrado";
+    tabelaWrapUser.innerHTML="<p style='padding:20px;text-align:center'>Nenhum resultado para este filtro</p>";
     return;
   }
 
-  const filtrado = DATA.map(r=>[
+  const filtrado = DATA_ORIGINAL.map(r=>[
     r[0],
     ...colunasValidas.map(c=>r[c])
   ]);
 
   renderTabela(filtrado);
-  statusUser.textContent = `Registros encontrados: ${colunasValidas.length}`;
+  statusUser.textContent = `✅ Registros encontrados: ${colunasValidas.length}`;
 }
 
-/* CARREGAR */
+/* ========== LIMPAR FILTRO ========== */
+function limparFiltro(){
+  campoFiltro.value = "";
+  filtroValor.value = "";
+  renderTabela(DATA_ORIGINAL);
+  statusUser.textContent=`Registros carregados: ${DATA_ORIGINAL.length - 1}`;
+}
+
+/* ========== CARREGAR DADOS ========== */
 async function carregarTabela(){
-  statusUser.textContent = "Carregando...";
-  DATA = [];
+  statusUser.textContent = "⏳ Carregando...";
+  tabelaWrapUser.innerHTML = "";
+  DATA_ORIGINAL = [];
 
   try {
-
+    console.log("📊 Carregando página 1...");
     const first = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=1&limit=${LIMIT}`);
 
-    // 🔥 TRATAMENTO DE ERRO
     if (!first || !first.ok) {
-      statusUser.textContent = first?.erro || "Erro ao carregar dados";
+      statusUser.textContent = "❌ " + (first?.erro || "Erro ao carregar dados");
+      statusUser.style.color = "#d32f2f";
       return;
     }
 
     HEAD = first.head;
-
-    DATA = [
-      HEAD,
-      ...first.rows
-    ];
+    DATA_ORIGINAL = [HEAD, ...first.rows];
+    
+    console.log(`✅ Página 1: ${first.rows.length} registros`);
 
     for (let p = 2; p <= first.totalPages; p++) {
-
+      console.log(`📊 Carregando página ${p}...`);
       const d = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=${p}&limit=${LIMIT}`);
 
       if (!d || !d.ok) {
-        statusUser.textContent = d?.erro || "Erro ao carregar páginas";
+        statusUser.textContent = "❌ " + (d?.erro || "Erro ao carregar páginas");
+        statusUser.style.color = "#d32f2f";
         return;
       }
 
-      DATA.push(...d.rows);
+      DATA_ORIGINAL.push(...d.rows);
     }
 
-    renderTabela(DATA);
-    statusUser.textContent = `Registros carregados: ${DATA.length - 1}`;
+    renderTabela(DATA_ORIGINAL);
+    statusUser.textContent = `✅ Registros carregados: ${DATA_ORIGINAL.length - 1}`;
+    statusUser.style.color = "#333";
+    
+    console.log(`✅ Total de registros: ${DATA_ORIGINAL.length - 1}`);
 
   } catch (err) {
-    statusUser.textContent = "Erro inesperado";
+    statusUser.textContent = "❌ Erro inesperado: " + err;
+    statusUser.style.color = "#d32f2f";
+    console.error(err);
   }
 }
 
-
+/* ========== EVENTOS ========== */
 btnRecarregar.onclick = carregarTabela;
+btnLimparFiltro.onclick = limparFiltro;
 
 let timer;
 filtroValor.addEventListener("input",()=>{
@@ -248,6 +310,20 @@ filtroValor.addEventListener("input",()=>{
   timer=setTimeout(aplicarFiltro,300);
 });
 
+campoFiltro.addEventListener("change", ()=>{
+  if(filtroValor.value.trim()){
+    aplicarFiltro();
+  }
+});
+
+// Enter para filtrar
+filtroValor.addEventListener("keypress", (e)=>{
+  if(e.key === "Enter"){
+    aplicarFiltro();
+  }
+});
+
+// Carregar ao iniciar
 carregarTabela();
 </script>
 </body>
