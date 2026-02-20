@@ -1,330 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel da Gerência</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel da Gerência</title>
+  <link rel="stylesheet" href="painel_gerencia.css">
 
-<style>
-body{
-  font-family:Arial, sans-serif;
-  background:#f4f6f8;
-  padding:20px;
-}
-.card{
-  max-width:1400px;
-  margin:auto;
-  background:#fff;
-  padding:24px;
-  border-radius:8px;
-}
-h2{
-  border-left:5px solid #0077ff;
-  padding-left:10px;
-  margin-top:0;
-}
-.row{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-  margin-top:12px;
-}
-button,a.btn{
-  padding:10px 18px;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-  font-size:14px;
-  text-decoration:none;
-}
-.btn-primary{background:#0077ff;color:#fff;}
-.btn-green{background:#28a745;color:#fff;}
-.btn-gray{background:#e0e0e0;color:#111;}
+  <style>
+    body.dark {
+      background: #1f2630;
+      color: #e0e0e0;
+    }
 
-#filters{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-  align-items:center;
-}
+    body.dark .card {
+      background: #2a3441;
+      border-color: #3b4756;
+    }
 
-#filters select,
-#filters input{
-  padding:8px;
-  font-size:14px;
-}
+    body.dark input,
+    body.dark select,
+    body.dark textarea {
+      background: #344150;
+      color: #e0e0e0;
+      border: 1px solid #556273;
+    }
 
-#statusUser{
-  margin-top:10px;
-  font-size:13px;
-  color:#333;
-}
+    body.dark button.next  { background: #2b6ea5; }
+    body.dark button.prev  { background: #444; color: #eee; }
+    body.dark label        { color: #ccc; }
+    body.dark h2           { color: #90caf9; }
 
-#tabelaWrapUser{
-  margin-top:12px;
-  overflow:auto;
-  max-height:70vh;
-  border:1px solid #e6e6e6;
-  border-radius:6px;
-}
+    /* Botão flutuante fixo */
+    #btnDarkMode {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: #2b6ea5;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
 
-table{
-  border-collapse:collapse;
-  width:100%;
-}
-
-th,td{
-  border:1px solid #ddd;
-  padding:8px;
-  font-size:13px;
-  white-space:nowrap;
-}
-
-th{
-  background:#f0f7ff;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-/* Destaque para números não-zero */
-.valor-destaque{
-  font-weight:bold;
-  font-size:15px;
-}
-</style>
+    #btnDarkMode:hover { background: #1f4f7a; }
+   
+  </style>
 </head>
 
 <body>
 <div class="card">
-  <h2>Painel da Gerência</h2>
+  <h2>Painel da Gerência <span class="badge">EDIÇÃO ATIVA</span></h2>
+
+  <div class="info-box">
+    ℹ️ <strong>Importante:</strong> Esta página mostra e edita os dados da aba
+    "<strong>Página2_Editado</strong>". Os dados originais estão protegidos na aba
+    "<strong>Página2</strong>".
+  </div>
+  <button id="btnDarkMode">☽ Dark Mode</button>
+  <script>
+  const btnDark = document.getElementById('btnDarkMode');
+
+  // 🔥 Restaura preferência salva
+  if (localStorage.getItem('darkMode') === 'on') {
+    document.body.classList.add('dark');
+    btnDark.textContent = '☼ Light Mode';
+  }
+
+  btnDark.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark');
+    btnDark.textContent = isDark ? '☼ Light Mode' : '☽ Dark Mode';
+    localStorage.setItem('darkMode', isDark ? 'on' : 'off');
+  });
+</script>
+
 
   <div class="row">
-    <button id="btnRecarregar" class="btn-green">Recarregar dados</button>
-    <a href="index.html" class="btn btn-gray">Voltar ao formulário</a>
+    <button id="btnRecarregar"  class="btn-green">⟲ Recarregar dados</button>
+    <button id="btnCopiarDados" class="btn-primary">❐ Copiar dados originais</button>
+    <button id="btnModoEdicao"  class="btn-orange">✒ Modo Edição</button>
+    <a href="index-1.html" class="btn btn-gray">← Voltar ao formulário</a>
   </div>
 
-  <!-- FILTROS -->
   <div id="filters">
-    <label>Filtrar por:</label>
+    <label style="font-weight:bold">Filtrar por:</label>
     <select id="campoFiltro">
-      <option value="">Todos</option>
+      <option value="">Todos os campos</option>
       <option value="Mes_Competencia">Mês</option>
       <option value="Ano_Competencia">Ano</option>
       <option value="Matricula">Matrícula</option>
       <option value="Email">E-mail</option>
       <option value="Setor_Nucleo">Setor</option>
     </select>
-
-    <input id="filtroValor" placeholder="Digite para filtrar...">
-    
-    <button id="btnLimparFiltro" class="btn-gray">Limpar</button>
+    <input id="filtroValor" placeholder="Digite para filtrar..." style="width:250px">
+    <button id="btnLimparFiltro" class="btn-gray">✖ Limpar</button>
   </div>
 
   <div id="statusUser"></div>
   <div id="tabelaWrapUser"></div>
 </div>
 
-<script>
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwhWlvzkIy_VvF0-oU-p_VI4NTB_prCQNAgYFAfRktzEMKTY5LQhd9niw5z-1nkSuLd5A/exec";
-const SENHA = "123";
-const LIMIT = 50;
+<!-- MODAL DE EDIÇÃO -->
+<div id="modalEdicao" class="modal">
+  <div class="modal-conteudo">
+    <h3>✎ Editar Célula</h3>
+    <label>␣ Campo:</label>
+    <input id="editCampo" readonly style="background:#f5f5f5">
+    <label>¹²³ Matrícula:</label>
+    <input id="editMatricula" readonly style="background:#f5f5f5">
+    <label>◷ Valor Atual:</label>
+    <input id="editValorAtual" readonly style="background:#f5f5f5">
+    <label>✓ Novo Valor:</label>
+    <input id="editNovoValor" type="text" placeholder="Digite o novo valor">
+    <div id="debugInfo" class="debug-info" style="display:none"></div>
+    <div class="modal-acoes">
+      <button id="btnCancelarEdicao" class="btn-gray">Cancelar</button>
+      <button id="btnSalvarEdicao"   class="btn-orange">💾 Salvar</button>
+    </div>
+  </div>
+</div>
 
-// 🔐 Verificação de senha
-const SENHA_CORRETA = "123";
-const senhaDigitada = prompt("Digite a senha da gerência:");
-
-if (senhaDigitada !== SENHA_CORRETA) {
-  document.body.innerHTML = "<div class='card'><h2 style='color:#d32f2f'>❌ Acesso negado</h2><p>Senha incorreta.</p></div>";
-  throw new Error("Acesso bloqueado");
-}
-
-let HEAD = [];
-let DATA = [];
-let DATA_ORIGINAL = [];
-
-/* ========== JSONP ========== */
-function jsonp(url){
-  return new Promise((res,rej)=>{
-    const cb="cb"+Date.now()+Math.random().toString(36).slice(2);
-    window[cb]=d=>{
-      delete window[cb];
-      s.remove();
-      res(d);
-    }
-    const s=document.createElement("script");
-    s.src=url+(url.includes("?")?"&":"?")+"callback="+cb;
-    s.onerror=()=>rej("Erro JSONP");
-    document.body.appendChild(s);
-  });
-}
-
-/* ========== SUBSTITUIR 0 POR "-" ========== */
-function formatarValor(valor){
-  if(valor === 0 || valor === "0") return "-";
-  return valor ?? "";
-}
-
-/* ========== DESTACAR NÚMEROS NÃO-ZERO ========== */
-function aplicarDestaque(){
-  const cells = document.querySelectorAll('tbody td');
-  
-  cells.forEach(cell => {
-    const valor = cell.textContent.trim();
-    const numero = parseFloat(valor);
-    
-    // Se for número e diferente de 0
-    if (!isNaN(numero) && numero !== 0) {
-      cell.classList.add('valor-destaque');
-    }
-  });
-}
-
-/* ========== RENDER TABELA ========== */
-function renderTabela(data){
-  if(!data || data.length < 2){
-    tabelaWrapUser.innerHTML = "<p>Nenhum dado disponível</p>";
-    return;
-  }
-
-  tabelaWrapUser.innerHTML = `
-    <table>
-      <thead>
-        <tr>${data[0].map(h=>`<th>${h}</th>`).join("")}</tr>
-      </thead>
-      <tbody>
-        ${data.slice(1).map(r=>`
-          <tr>${r.map(c=>`<td>${formatarValor(c)}</td>`).join("")}</tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
-  
-  // Aplicar destaque após renderizar
-  aplicarDestaque();
-}
-
-/* ========== FILTRO POR COLUNA ========== */
-function aplicarFiltro(){
-  const campo = campoFiltro.value;
-  const termo = filtroValor.value.trim().toLowerCase();
-
-  if(!campo || !termo){
-    renderTabela(DATA_ORIGINAL);
-    statusUser.textContent=`Registros carregados: ${DATA_ORIGINAL.length - 1}`;
-    return;
-  }
-
-  const rowIndex = DATA_ORIGINAL.findIndex(r => r[0] === campo);
-  
-  if(rowIndex === -1){
-    statusUser.textContent="Campo não encontrado";
-    return;
-  }
-
-  const colunasValidas = [];
-
-  for(let c=1; c<DATA_ORIGINAL[rowIndex].length; c++){
-    const valor = String(DATA_ORIGINAL[rowIndex][c] ?? "").toLowerCase();
-    if(valor.includes(termo)) colunasValidas.push(c);
-  }
-
-  if(colunasValidas.length === 0){
-    statusUser.textContent="❌ Nenhum registro encontrado";
-    tabelaWrapUser.innerHTML="<p style='padding:20px;text-align:center'>Nenhum resultado para este filtro</p>";
-    return;
-  }
-
-  const filtrado = DATA_ORIGINAL.map(r=>[
-    r[0],
-    ...colunasValidas.map(c=>r[c])
-  ]);
-
-  renderTabela(filtrado);
-  statusUser.textContent = `✅ Registros encontrados: ${colunasValidas.length}`;
-}
-
-/* ========== LIMPAR FILTRO ========== */
-function limparFiltro(){
-  campoFiltro.value = "";
-  filtroValor.value = "";
-  renderTabela(DATA_ORIGINAL);
-  statusUser.textContent=`Registros carregados: ${DATA_ORIGINAL.length - 1}`;
-}
-
-/* ========== CARREGAR DADOS ========== */
-async function carregarTabela(){
-  statusUser.textContent = "⏳ Carregando...";
-  tabelaWrapUser.innerHTML = "";
-  DATA_ORIGINAL = [];
-
-  try {
-    console.log("📊 Carregando página 1...");
-    const first = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=1&limit=${LIMIT}`);
-
-    if (!first || !first.ok) {
-      statusUser.textContent = "❌ " + (first?.erro || "Erro ao carregar dados");
-      statusUser.style.color = "#d32f2f";
-      return;
-    }
-
-    HEAD = first.head;
-    DATA_ORIGINAL = [HEAD, ...first.rows];
-    
-    console.log(`✅ Página 1: ${first.rows.length} registros`);
-
-    for (let p = 2; p <= first.totalPages; p++) {
-      console.log(`📊 Carregando página ${p}...`);
-      const d = await jsonp(`${WEBAPP_URL}?senha=${SENHA}&page=${p}&limit=${LIMIT}`);
-
-      if (!d || !d.ok) {
-        statusUser.textContent = "❌ " + (d?.erro || "Erro ao carregar páginas");
-        statusUser.style.color = "#d32f2f";
-        return;
-      }
-
-      DATA_ORIGINAL.push(...d.rows);
-    }
-
-    renderTabela(DATA_ORIGINAL);
-    statusUser.textContent = `✅ Registros carregados: ${DATA_ORIGINAL.length - 1}`;
-    statusUser.style.color = "#333";
-    
-    console.log(`✅ Total de registros: ${DATA_ORIGINAL.length - 1}`);
-
-  } catch (err) {
-    statusUser.textContent = "❌ Erro inesperado: " + err;
-    statusUser.style.color = "#d32f2f";
-    console.error(err);
-  }
-}
-
-/* ========== EVENTOS ========== */
-btnRecarregar.onclick = carregarTabela;
-btnLimparFiltro.onclick = limparFiltro;
-
-let timer;
-filtroValor.addEventListener("input",()=>{
-  clearTimeout(timer);
-  timer=setTimeout(aplicarFiltro,300);
-});
-
-campoFiltro.addEventListener("change", ()=>{
-  if(filtroValor.value.trim()){
-    aplicarFiltro();
-  }
-});
-
-// Enter para filtrar
-filtroValor.addEventListener("keypress", (e)=>{
-  if(e.key === "Enter"){
-    aplicarFiltro();
-  }
-});
-
-// Carregar ao iniciar
-carregarTabela();
-</script>
+<!-- JS no final para garantir que o DOM já está carregado -->
+<script src="painel_gerencia.js"></script>
 </body>
+</head>
 </html>
