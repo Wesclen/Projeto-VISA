@@ -1,0 +1,131 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 20px;
+}
+
+form {
+  max-width: 900px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.step { display: none; }
+.step.active { display: block; }
+
+h2 {
+  border-left: 5px solid #0077ff;
+  padding-left: 10px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0 14px;
+  box-sizing: border-box;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+button, a.btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.next   { background: #0077ff; color: white; }
+.prev   { background: #ccc; color: #111; }
+.submit { background: #28a745; color: white; width: 100%; font-size: 16px; }
+.submit:disabled { background: #aaa; cursor: not-allowed; }
+
+.erro-box {
+  color: #b00020;
+  font-weight: bold;
+  padding: 12px;
+  border: 1px solid #f3b7bd;
+  background: #fff5f6;
+  border-radius: 6px;
+  margin-top: 12px;
+  white-space: pre-wrap;
+}
+
+.sucesso-box {
+  color: #1a6e2e;
+  font-weight: bold;
+  padding: 16px;
+  border: 1px solid #b7dfc0;
+  background: #f0fff4;
+  border-radius: 6px;
+  margin-top: 12px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* DARK MODE */
+body.dark {
+  background: #1a1a2e;
+  color: #e0e0e0;
+}
+
+body.dark form,
+body.dark .card {
+  background: #16213e;
+  color: #e0e0e0;
+  border-color: #0f3460;
+}
+
+body.dark input,
+body.dark select,
+body.dark textarea {
+  background: #0f3460;
+  color: #e0e0e0;
+  border: 1px solid #e0e0e0;
+}
+
+body.dark button.next  { background: #0077ff; }
+body.dark button.prev  { background: #444; color: #eee; }
+body.dark label        { color: #ccc; }
+body.dark h2           { color: #90caf9; }
+
+body.dark .step,
+body.dark .container,
+body.dark .wrapper {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Botão Dark */
+#btnDarkMode {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  background: #0077ff;
+  color: white;
+  border-radius: 50px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-size: 16px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: background 0.3s;
+}
+
+#btnDarkMode:hover { background: #005fcc; }
