@@ -1,3 +1,4 @@
+<!-- AMBIENTE DE TESTE - URLs de produção desativadas -->
 <style>
 .step {
     animation: fadeIn 0.3s ease-in;
@@ -73,24 +74,35 @@ button {
 .prev:hover {
     background: #777;
 }
+
+/* ✅ FOOTER CORRIGIDO */
+.footer {
+    margin-top: 10px;
+    text-align: left;
+    color: blue;
+    font-size: 14px;
+}
 </style>
 
 <!-- SEÇÃO 1 · IDENTIFICAÇÃO -->
 <div class="step" data-section="1">
-<h2>Seção 1 · Identificação</h2>
+    <h2>Seção 1 · Identificação</h2>
 
-<label>Matrícula</label>
-<input type="text"
-       name="Matricula"
-       pattern="\d+"
-       inputmode="numeric"
-       placeholder="Ex: 123456789">
+   <label for="matricula">Matrícula</label>
+<input
+    type="text"
+    id="matricula"
+    name="Matricula"
+    pattern="\d{4,10}"
+    inputmode="numeric"
+    placeholder="Ex: 123456789"
+    required
+>
 
+    <label>E-mail</label>
+    <input type="email" name="Email" required>
 
-<label>E-mail</label>
-<input type="email" name="Email" required placeholder="">
-
-<label>Setor / Núcleo</label>
+    <label>Setor / Núcleo</label>
 <select name="Setor_Nucleo" required>
     <option value="">Selecione</option>
     <option>Gerência Técnica de Vigilância Sanitária</option>
@@ -103,33 +115,41 @@ button {
     <option>Núcleo de Serviço e Saúde</option>
     <option>Protocolo</option>
     <option>Núcleo de Medicamentos e Farmacológicos</option>
-    <option>Núcleo de Alimentos</option>
+    <option>Núcleo de Alimentos</option> </select>
 
+    <label for="mes_competencia">Mês de competência</label>
+<select id="mes_competencia" name="Mes_Competencia" required>
+  <option value="" disabled selected>Selecione</option>
+  <option value="Janeiro">Janeiro</option>
+  <option value="Fevereiro">Fevereiro</option>
+  <option value="Março">Março</option>
+  <option value="Abril">Abril</option>
+  <option value="Maio">Maio</option>
+  <option value="Junho">Junho</option>
+  <option value="Julho">Julho</option>
+  <option value="Agosto">Agosto</option>
+  <option value="Setembro">Setembro</option>
+  <option value="Outubro">Outubro</option>
+  <option value="Novembro">Novembro</option>
+  <option value="Dezembro">Dezembro</option>
 </select>
 
-<label>Mês de competência</label>
-<select name="Mes_Competencia" required>
-  <option value="">Selecione</option>
-  <option value="01">Janeiro</option>
-  <option value="02">Fevereiro</option>
-  <option value="03">Março</option>
-  <option value="04">Abril</option>
-  <option value="05">Maio</option>
-  <option value="06">Junho</option>
-  <option value="07">Julho</option>
-  <option value="08">Agosto</option>
-  <option value="09">Setembro</option>
-  <option value="10">Outubro</option>
-  <option value="11">Novembro</option>
-  <option value="12">Dezembro</option>
-</select>
+    <label>Ano de competência</label>
+    <input
+        type="number"
+        name="Ano_Competencia"
+        min="2000"
+        max="2040"
+        placeholder="Ano"
+        required
+    >
 
+    <div class="buttons">
+        <span></span>
+        <button type="button" class="next">Próximo</button>
+    </div>
+    <footer class="footer">
+    &copy; Visadevs
+</footer>
 
-<label>Ano de competência</label>
-<input type="text" name="Ano_Competencia" max="2030" placeholder="Ano" inputmode="numeric" maxlength="4" pattern="\d{4}" required>
-<div class="buttons">
-
-    <span></span>
-    <button type="button" class="next">Próximo</button>
-</div>
 </div>
