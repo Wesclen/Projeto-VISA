@@ -1,16 +1,16 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: #c2c2c2;
   padding: 20px;
 }
 
 form {
   max-width: 900px;
   margin: auto;
-  background: #fff;
-  padding: 30px;
+  background: #00000004;
+  padding: 7px;
   border-radius: 8px;
-}
+  }
 
 .step { display: none; }
 .step.active { display: block; }
