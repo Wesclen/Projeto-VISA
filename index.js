@@ -139,7 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelector("form").innerHTML = `
           <div class="sucesso-box">
-            ✅ Formulário enviado com sucesso!
+            ✔ Formulário enviado com sucesso!
+            <a href="index.html">Clique aqui para voltar ao início.</a>
           </div>`;
       } catch (err) {
         alert("Erro ao enviar: " + err.message);
