@@ -202,7 +202,7 @@ function aplicarFiltro() {
 
   if (!campo || !termo) {
     renderTabela(DATA_HEAD, DATA_ROWS);
-    statusUser.textContent = `📊 Registros carregados: ${DATA_ROWS.length}`;
+    statusUser.textContent = `〽︎ Registros carregados: ${DATA_ROWS.length}`;
     statusUser.style.color = "#333";
     return;
   }
@@ -234,14 +234,14 @@ function limparFiltro() {
   campoFiltro.value = "";
   filtroValor.value = "";
   renderTabela(DATA_HEAD, DATA_ROWS);
-  statusUser.textContent = `📊 Registros carregados: ${DATA_ROWS.length}`;
+  statusUser.textContent = `〽︎ Registros carregados: ${DATA_ROWS.length}`;
   statusUser.style.color = "#333";
 }
 
 // ========== CARREGAR TABELA ==========
 async function carregarTabela() {
-  statusUser.textContent = "⏳ Carregando dados...";
-  statusUser.style.color = "#ff9800";
+  statusUser.textContent = "⧖ Carregando dados...";
+  statusUser.style.color = "#ff99009d";
   tabelaWrapUser.innerHTML = "";
   DATA_HEAD  = [];
   DATA_ROWS  = [];
@@ -292,7 +292,7 @@ function toggleModoEdicao() {
   } else {
     btnModoEdicao.textContent = "🔓 Ativar Modo Edição";
     btnModoEdicao.classList.replace('btn-red', 'btn-orange');
-    statusUser.textContent = `📊 Registros carregados: ${DATA_ROWS.length}`;
+    statusUser.textContent = `〽︎ Registros carregados: ${DATA_ROWS.length}`;
     statusUser.style.color = "#333";
   }
 
@@ -340,4 +340,4 @@ filtroValor.addEventListener("keypress", e => {
 
 // Iniciar
 carregarTabela();
-console.log("🎉 Painel da Gerência carregado!");
+console.log("Painel da Gerência carregado!");
