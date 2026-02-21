@@ -69,11 +69,11 @@ button, a.btn {
   transition: 0.2s;
 }
 
-.btn-primary { background: #2b6ea5; color: #fff; }
-.btn-green   { background: #2e8b57; color: #fff; }
-.btn-orange  { background: #e67e22; color: #fff; }
-.btn-red     { background: #c62828; color: #fff; }
-.btn-gray    { background: #e0e0e0; color: #333; }
+.btn-primary { background: #e0e0e0; color: #333; }
+.btn-green   { background: #e0e0e0; color: #333; }
+.btn-orange  { background: #e0e0e0; color: #333; }
+.btn-red     { background: #e0e0e0; color: #333; }
+.btn-gray    { background: #acacac; color: #333; }
 
 button:hover, a.btn:hover {
   opacity: 0.9;
@@ -152,7 +152,7 @@ td.editavel:hover {
 .valor-destaque {
   font-weight: bold;
   font-size: 13px;
-  color: #c62828;
+  color: #1b0d0d;
 }
 
 /* MODAL */
