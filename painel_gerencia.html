@@ -4,67 +4,100 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel da Gerência</title>
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="painel_gerencia.css">
 
-  <style>
-    body.dark {
-      background: #1f2630;
-      color: #e0e0e0;
-    }
-
-    body.dark .card {
-      background: #2a3441;
-      border-color: #3b4756;
-    }
-
-    body.dark input,
-    body.dark select,
-    body.dark textarea {
-      background: #344150;
-      color: #e0e0e0;
-      border: 1px solid #363e49;
-    }
-
-    body.dark button.next  { background: #2b6ea5; }
-    body.dark button.prev  { background: #242323; color: #eee; }
-    body.dark label        { color: #ccc; }
-    body.dark h2           { color: #90caf9; }
-
-    /* Botão flutuante fixo */
-    #btnDarkMode {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 9999;
-      background: #2b6ea5;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.3s;
-    }
-
-    #btnDarkMode:hover { background: #1f4f7a; }
-   
-  </style>
 </head>
 
 <body>
+
+<!--<button id="btnDarkMode">☽ Dark Mode</button>-->
+
 <div class="card">
+
   <h2>Painel da Gerência <span class="badge">EDIÇÃO ATIVA</span></h2>
 
   <div class="info-box">
-    ℹ️ <strong>Importante:</strong> Esta página mostra e edita os dados da aba
-    "<strong>Página2_Editado</strong>". Os dados originais estão protegidos na aba
-    "<strong>Página2</strong>".
+    ℹ️ <strong>Importante:</strong>
+    Esta página mostra e edita os dados da aba
+    <strong>"Página2_Editado"</strong>.
+    Os dados originais estão protegidos na aba
+    <strong>"Página2"</strong>.
   </div>
-  <button id="btnDarkMode">☽ Dark Mode</button>
-  <script>
+
+  <div class="row">
+    <button id="btnRecarregar" class="btn-green">⟲ Recarregar dados</button>
+    <button id="btnCopiarDados" class="btn-primary">❐ Copiar dados originais</button>
+    <button id="btnModoEdicao" class="btn-orange">✒ Modo Edição</button>
+    <a href="index.html" class="btn btn-gray">← Voltar ao formulário</a>
+  </div>
+
+  <div id="filters">
+    <label><strong>Filtrar por:</strong></label>
+
+    <select id="campoFiltro">
+      <option value="">Todos os campos</option>
+      <option value="Mes_Competencia">Mês</option>
+      <option value="Ano_Competencia">Ano</option>
+      <option value="Matricula">Matrícula</option>
+      <option value="Email">E-mail</option>
+      <option value="Setor_Nucleo">Setor</option>
+    </select>
+
+    <input id="filtroValor" placeholder="Digite para filtrar..." style="width:250px">
+
+    <button id="btnLimparFiltro" class="btn-gray">✖ Limpar</button>
+
+    <button id="btnDashboard" class="btn-gray">
+  📊 Dashboard
+</button>
+  </div>
+
+  <div id="indicadorTotal" style="margin: 10px 0; font-weight: bold;">
+    Total de respostas: <span id="totalRespostas">0</span>
+  </div>
+  <div id="dashboardWrap" class="dashboard oculto">
+  <canvas id="dashboardChart"></canvas>
+</div>
+
+  <div id="statusUser"></div>
+
+  <!-- 🔥 TABELA SEMPRE AQUI DENTRO -->
+  <div id="tabelaWrapUser"></div>
+
+</div>
+
+<!-- MODAL DE EDIÇÃO -->
+<div id="modalEdicao" class="modal">
+  <div class="modal-conteudo">
+    <h3>✎ Editar Célula</h3>
+
+    <label for="editCampo">Campo:</label>
+    <input id="editCampo" readonly>
+
+    <label for="editMatricula">Matrícula:</label>
+    <input id="editMatricula" readonly>
+
+    <label for="editValorAtual">Valor Atual:</label>
+    <input id="editValorAtual" readonly>
+
+    <label for="editNovoValor">Novo Valor:</label>
+    <input id="editNovoValor" type="text">
+
+    <div class="row" style="justify-content:flex-end; margin-top:12px;">
+      <button id="btnCancelarEdicao" class="btn-red">Cancelar</button>
+      <button id="btnSalvarEdicao" class="btn-green">💾 Salvar</button>
+    </div>
+
+    <div id="debugInfo" class="debug-info"></div>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
   const btnDark = document.getElementById('btnDarkMode');
 
-  // 🔥 Restaura preferência salva
   if (localStorage.getItem('darkMode') === 'on') {
     document.body.classList.add('dark');
     btnDark.textContent = '☼ Light Mode';
@@ -76,55 +109,8 @@
     localStorage.setItem('darkMode', isDark ? 'on' : 'off');
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="painel_gerencia.js" defer></script>
 
-
-  <div class="row">
-    <button id="btnRecarregar"  class="btn-green">⟲ Recarregar dados</button>
-    <button id="btnCopiarDados" class="btn-primary">❐ Copiar dados originais</button>
-    <button id="btnModoEdicao"  class="btn-orange">✒ Modo Edição</button>
-    <a href="index.html" class="btn btn-gray">← Voltar ao formulário</a>
-  </div>
-
-  <div id="filters">
-    <label style="font-weight:bold">Filtrar por:</label>
-    <select id="campoFiltro">
-      <option value="">Todos os campos</option>
-      <option value="Mes_Competencia">Mês</option>
-      <option value="Ano_Competencia">Ano</option>
-      <option value="Matricula">Matrícula</option>
-      <option value="Email">E-mail</option>
-      <option value="Setor_Nucleo">Setor</option>
-    </select>
-    <input id="filtroValor" placeholder="Digite para filtrar..." style="width:250px">
-    <button id="btnLimparFiltro" class="btn-gray">✖ Limpar</button>
-  </div>
-
-  <div id="statusUser"></div>
-  <div id="tabelaWrapUser"></div>
-</div>
-
-<!-- MODAL DE EDIÇÃO -->
-<div id="modalEdicao" class="modal">
-  <div class="modal-conteudo">
-    <h3>✎ Editar Célula</h3>
-    <label>␣ Campo:</label>
-    <input id="editCampo" readonly style="background:#f5f5f5">
-    <label>¹²³ Matrícula:</label>
-    <input id="editMatricula" readonly style="background:#f5f5f5">
-    <label>◷ Valor Atual:</label>
-    <input id="editValorAtual" readonly style="background:#f5f5f5">
-    <label>✓ Novo Valor:</label>
-    <input id="editNovoValor" type="text" placeholder="Digite o novo valor">
-    <div id="debugInfo" class="debug-info" style="display:none"></div>
-    <div class="modal-acoes">
-      <button id="btnCancelarEdicao" class="btn-gray">Cancelar</button>
-      <button id="btnSalvarEdicao"   class="btn-orange">💾 Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- JS no final para garantir que o DOM já está carregado -->
-<script src="painel_gerencia.js"></script>
 </body>
-</head>
 </html>
