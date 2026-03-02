@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ========== CONFIGURAÇÃO ==========
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzJCLmuY5tUBlabAjN6CMmLtRo4nDXqKLTHccjZ1kwrvs4TOlGqcqD_f0qpxen4XANvuw/exec";
 
   const sectionFiles = [
@@ -14,13 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
     "./07-outros.html",
   ];
 
-  // ========== ERRO NA PÁGINA ==========
-  function showErrorOnPage(message) {
-    document.getElementById("sections").innerHTML =
-      `<div class="erro-box">${message}</div>`;
-  }
+  const form = document.getElementById("formBPA");
+  const container = document.getElementById("sections");
 
-  // ========== ENVIAR PARA APPS SCRIPT ==========
+  // =========================
+  // ENVIAR PARA APPS SCRIPT
+  // =========================
   async function enviarFormulario(dados) {
     const resp = await fetch(WEBAPP_URL, {
       method: "POST",
@@ -30,10 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return await resp.json();
   }
 
-  // ========== COLETAR DADOS ==========
+  // =========================
+  // COLETAR DADOS
+  // =========================
   function coletarDados() {
     const dados = {};
-    const form = document.getElementById("formBPA");
 
     form.querySelectorAll("input, select, textarea").forEach(field => {
       if (!field.name) return;
@@ -51,21 +50,55 @@ document.addEventListener("DOMContentLoaded", () => {
     return dados;
   }
 
-  // ========== PADRONIZAR CAMPOS NUMÉRICOS ==========
-  document.addEventListener("blur", (e) => {
-    if (e.target.type === "number") {
-      if (e.target.value === "" || e.target.value === null) {
-        e.target.value = "0";
-      } else {
-        const v = parseInt(e.target.value, 10);
-        if (!isNaN(v)) e.target.value = v;
-      }
-    }
-  }, true);
+  // =========================
+  // GERAR RESUMO
+  // =========================
+  function gerarResumo() {
+    const conteudo = document.getElementById("conteudoResumo");
+    conteudo.innerHTML = "";
 
-  // ========== CARREGAR SEÇÕES ==========
+    const steps = document.querySelectorAll(".step");
+
+    steps.forEach(step => {
+      const titulo = step.querySelector("h2")?.textContent;
+      const fields = step.querySelectorAll("input, select, textarea");
+
+      const secao = document.createElement("div");
+      secao.classList.add("resumo-secao");
+
+      const h3 = document.createElement("h3");
+      h3.textContent = titulo;
+      secao.appendChild(h3);
+
+      fields.forEach(field => {
+        if (!field.name) return;
+
+        const label = step.querySelector(`label[for="${field.id}"]`) 
+                    || field.previousElementSibling;
+
+        const pergunta = label ? label.textContent : field.name;
+        const resposta = field.value || "—";
+
+        const item = document.createElement("div");
+        item.classList.add("resumo-item");
+
+        item.innerHTML = `
+          <div class="pergunta">${pergunta}</div>
+          <div class="resposta"><span>${resposta}</span></div>
+        `;
+
+        secao.appendChild(item);
+      });
+
+      conteudo.appendChild(secao);
+    });
+  }
+
+  // =========================
+  // CARREGAR SEÇÕES
+  // =========================
   async function loadSections() {
-    const container = document.getElementById("sections");
+
     container.innerHTML = "";
 
     for (const file of sectionFiles) {
@@ -79,26 +112,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const steps = document.querySelectorAll(".step");
-    if (!steps.length) {
-      showErrorOnPage("Erro: nenhuma seção (.step) foi carregada.");
-      return;
-    }
-
     let currentStep = 0;
 
-    const showStep = (index) => {
+    function showStep(index) {
       steps.forEach(s => s.classList.remove("active"));
       steps[index]?.classList.add("active");
-
-      const submitBtn = document.querySelector(".submit");
-      if (submitBtn)
-        submitBtn.style.display = index === steps.length - 1 ? "block" : "none";
-    };
+    }
 
     showStep(currentStep);
 
+    // =========================
+    // BOTÃO NEXT
+    // =========================
     document.querySelectorAll(".next").forEach(btn => {
       btn.addEventListener("click", () => {
+
         const fields = steps[currentStep].querySelectorAll("input, select, textarea");
 
         for (let field of fields) {
@@ -116,6 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // =========================
+    // BOTÃO VOLTAR
+    // =========================
     document.querySelectorAll(".prev").forEach(btn => {
       btn.addEventListener("click", () => {
         if (currentStep > 0) {
@@ -126,10 +157,49 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    document.getElementById("formBPA").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const submitBtn = document.querySelector(".submit");
+    // =========================
+    // FINALIZAR (ABRE MODAL)
+    // =========================
+    const btnFinalizar = document.getElementById("btnFinalizar");
+    const modal = document.getElementById("modalResumo");
 
+    btnFinalizar.addEventListener("click", () => {
+
+      const fields = steps[currentStep].querySelectorAll("input, select, textarea");
+
+      for (let field of fields) {
+        if (!field.checkValidity()) {
+          field.reportValidity();
+          return;
+        }
+      }
+
+      gerarResumo();
+      modal.style.display = "flex";
+    });
+
+    // =========================
+    // CANCELAR MODAL
+    // =========================
+    document.getElementById("cancelarEnvio").addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    // =========================
+    // CONFIRMAR ENVIO
+    // =========================
+    document.getElementById("confirmarEnvio").addEventListener("click", () => {
+      modal.style.display = "none";
+      form.requestSubmit();
+    });
+
+    // =========================
+    // SUBMIT ORIGINAL
+    // =========================
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById("btnFinalizar");
       submitBtn.disabled = true;
       submitBtn.textContent = "⏳ Enviando...";
 
@@ -137,39 +207,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const resultado = await enviarFormulario(coletarDados());
         if (!resultado.ok) throw new Error(resultado.erro);
 
-        document.querySelector("form").innerHTML = `
+        form.innerHTML = `
           <div class="sucesso-box">
             ✔ Formulário enviado com sucesso!
+            <br><br>
             <a href="index.html">Clique aqui para voltar ao início.</a>
           </div>`;
       } catch (err) {
         alert("Erro ao enviar: " + err.message);
         submitBtn.disabled = false;
-        submitBtn.textContent = "Enviar formulário";
+        submitBtn.textContent = "Finalizar";
       }
     });
+
   }
 
-  // ========== PAINEL GERÊNCIA ==========
-  document.addEventListener("click", (e) => {
+  loadSections();
+});
+document.addEventListener("click", (e) => {
     if (e.target.closest("#btnPainelGerencia")) {
       window.location.href = "./painel_gerencia.html";
     }
   });
-
-  // ========== DARK MODE ==========
-  const btnDark = document.getElementById("btnDarkMode");
-
-  if (localStorage.getItem("darkMode") === "on") {
-    document.body.classList.add("dark");
-    btnDark.textContent = "☼ Light Mode";
-  }
-
-  btnDark.addEventListener("click", () => {
-    const isDark = document.body.classList.toggle("dark");
-    btnDark.textContent = isDark ? "☼ Light Mode" : "☽ Dark Mode";
-    localStorage.setItem("darkMode", isDark ? "on" : "off");
-  });
-
-  loadSections();
-});
