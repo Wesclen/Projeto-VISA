@@ -109,46 +109,137 @@ button {
 
 <!-- SEÇÃO 7 · OUTROS -->
 <div class="step" data-section="7">
-<h2>Seção 7 · Outros</h2>
+  <h2>Seção 7 · Outros</h2>
 
-<label>Informe a quantidade de Análises de Projetos Básicos de Arquitetura - 01.2.01.006-4</label>
-<input type="number" name="Informe a quantidade de Análises de Projetos Básicos de Arquitetura" min="0" value="0">
+  <label>Informe a quantidade de Análises de Projetos Básicos de Arquitetura - 01.2.01.006-4</label>
+  <input type="number" name="Informe a quantidade de Análises de Projetos Básicos de Arquitetura" min="0" value="0">
 
-<label>Informe a quantidade de Aprovação de Projetos Básicos de Arquitetura - 01.2.01.019-6</label>
-<input type="number" name="Informe a quantidade de Aprovação de Projetos Básicos de Arquitetura" min="0" value="0">
+  <label>Informe a quantidade de Aprovação de Projetos Básicos de Arquitetura - 01.2.01.019-6</label>
+  <input type="number" name="Informe a quantidade de Aprovação de Projetos Básicos de Arquitetura" min="0" value="0">
 
-<label>Informe a quantidade de Recebimento de  Denuncia / Reclamação - 01.2.01.023-4</label>
-<input type="number" name="Informe a quantidade de Recebimento de  Denuncia / Reclamação" min="0" value="0">
+  <label>Informe a quantidade de Recebimento de Denuncia / Reclamação - 01.2.01.023-4</label>
+  <input type="number" name="Informe a quantidade de Recebimento de  Denuncia / Reclamação" min="0" value="0">
 
-<label>Informe a quantidade de Atendimento de  Denuncia / Reclamação - 01.2.01.024-2</label>
-<input type="number" name="Informe a quantidade de Atendimento de  Denuncia / Reclamação" min="0" value="0">
+  <label>Informe a quantidade de Atendimento de Denuncia / Reclamação - 01.2.01.024-2</label>
+  <input type="number" name="Informe a quantidade de Atendimento de  Denuncia / Reclamação" min="0" value="0">
 
-<label>Informe a quantidade de Instauração de Processos Administrativos Sanitários - 01.2.01.052-8</label>
-<input type="number" name="Informe a quantidade de Instauração de Processos Administrativos Sanitários" min="0" value="0">
+  <label>Informe a quantidade de Laudo de Análise Laboratorial do Programa de Monitoramento de Alimentos recebidos pela Vigilância Sanitária - 01.2.01.049-8</label>
+  <input type="number" name="Informe a quantidade de Laudo de Análise Laboratorial do Programa de Monitoramento de Alimentos recebidos pela Vigilância Sanitária" min="0" value="0">
 
-<label>Informe a quantidade de Conclusão de Processos Administrativos Sanitários - 01.2.01.053-6</label>
-<input type="number" name="Informe a quantidade de Conclusão de Processos Administrativos Sanitários" min="0" value="0">
+  <div class="buttons">
+    <button type="button" class="prev">Voltar</button>
 
-<label>Informe a quantidade de Fiscalização do uso de produtos fumigeros, derivados do tabaco em ambientes coletivos fechados, públicos ou privados - 01.2.01.048</label>
-<input type="number" name="Informe a quantidade de Fiscalização do uso de produtos fumigeros, derivados do tabaco em ambientes coletivos fechados" min="0" value="0">
+    <button type="button" id="btnFinalizar" class="submit">
+      Finalizar
+    </button>
 
-<label>Informe a quantidade de Laudo de Análise Laboratorial do Programa de Monitoramento de Alimentos recebidos pela Vigilância Sanitária - 01.2.01.049-8
-</label>
-<input type="number" name="Informe a quantidade de Laudo de Análise Laboratorial do Programa de Monitoramento de Alimentos recebidos" min="0" value="0">
-
-<div class="buttons">
-  <button type="button" class="prev">Voltar</button>
-
-  <button type="submit" class="submit" aria-describedby="aviso-redirecionamento">
-    Enviar BPA
-  </button>
-
-  <div id="aviso-redirecionamento" class="aviso-redirecionamento">
-    <strong>ℹ️ Aviso:</strong> Após enviar o formulário, você será direcionado ao início do site.
+    <div class="aviso-redirecionamento">
+      <strong>ℹ️ Aviso:</strong> O envio das respostas pode demorar um pouco, por favor aguarde ao "Confirmar envio".
+    </div>
   </div>
-  <footer class="footer"> &copy;Visadevs</footer>
 </div>
 
+<!-- ================= MODAL RESUMO ================= -->
+<div id="modalResumo" class="modal-overlay">
+  <div class="modal-box">
+
+    <h2>Revise suas Respostas</h2>
+
+    <div id="conteudoResumo"></div>
+
+    <div class="modal-actions">
+      <button type="button" id="cancelarEnvio" class="btn-cancelar">Cancelar</button>
+      <button type="button" id="confirmarEnvio" class="btn-confirmar">Confirmar envio</button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background: #fff;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.modal-box h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-left: 5px solid #000000;
+  padding-left: 10px;
+}
+
+.resumo-secao {
+  margin-bottom: 25px;
+}
+
+.resumo-secao h3 {
+  margin-bottom: 15px;
+  color: #000000;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.resumo-item {
+  margin-bottom: 15px;
+  padding: 12px 15px;
+  background: #f8f9fb;
+  border-radius: 6px;
+}
+
+.resumo-item .pergunta {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.resumo-item .resposta {
+  color: #555;
+}
+
+.resumo-item .resposta span {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.btn-cancelar {
+  background: #999;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.btn-confirmar {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+</style>
 
 
 
