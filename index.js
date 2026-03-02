@@ -229,3 +229,16 @@ document.addEventListener("click", (e) => {
       window.location.href = "./painel_gerencia.html";
     }
   });
+  
+  //DARK MODE//
+  const btnDarkMode = document.getElementById("btnDarkMode");
+
+btnDarkMode.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  // opcional: muda o texto do botão
+  btnDarkMode.textContent = 
+    document.body.classList.contains("dark")
+      ? "☀ Light Mode"
+      : "☽ Dark Mode";
+});
