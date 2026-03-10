@@ -84,6 +84,27 @@ function formatarValor(v) {
   return v === 0 || v === "0" ? "-" : (v ?? "");
 }
 
+// ================= SOMA DAS PERGUNTAS =================
+function somarPergunta(colIdx) {
+
+  const nomeColuna = STATE.head[colIdx] || "";
+
+  // Detecta código tipo 01.02.01.007-2 ou 01.2.01.036-6
+  const ehPergunta = /\d{2}\.\d{1,2}\.\d{2}\.\d{3}-\d/.test(nomeColuna);
+
+  // se não for pergunta, não soma
+  if (!ehPergunta) return "";
+
+  let total = 0;
+
+  STATE.rowsVisiveis.forEach(r => {
+    const n = Number(r[colIdx]);
+    if (!isNaN(n)) total += n;
+  });
+
+  return total;
+}
+
 // ================= INDICADOR =================
 function atualizarIndicador() {
   let total = 0;
@@ -102,7 +123,7 @@ function renderTabela() {
   if (!STATE.head.length) return;
 
   const idxMat = STATE.head.indexOf("Matricula");
-  let html = "<table><thead><tr><th>Campo</th>";
+  let html = "<table><thead><tr><th>Campo</th><th>Total</th>";
 
   STATE.rowsVisiveis.forEach((r, i) => {
     html += `<th>${r[idxMat] || `Reg ${i + 1}`}</th>`;
@@ -111,18 +132,26 @@ function renderTabela() {
   html += "</tr></thead><tbody>";
 
   STATE.head.forEach((campo, fIdx) => {
-    html += `<tr><td><strong>${campo}</strong></td>`;
+
+    const totalPergunta = somarPergunta(fIdx);
+
+    html += `<tr>
+    <td><strong>${campo}</strong></td>
+    <td><strong>${totalPergunta}</strong></td>`;
+
     STATE.rowsVisiveis.forEach((reg, rIdx) => {
       const v = formatarValor(reg[fIdx]);
       html += STATE.modoEdicao
         ? `<td class="editavel" data-row="${rIdx}" data-field="${fIdx}">${v}</td>`
         : `<td>${v}</td>`;
     });
+
     html += "</tr>";
   });
 
   html += "</tbody></table>";
   DOM.tabelaWrap.innerHTML = html;
+
   atualizarIndicador();
 }
 
@@ -193,8 +222,7 @@ DOM.btnCancelar.onclick = () => {
   STATE.celulaEditando = null;
 };
 
-// ================= DASHBOARD HORIZONTAL =================
-// ================= DASHBOARD VERTICAL =================
+// ================= DASHBOARD =================
 function abrirDashboard() {
   if (STATE.dashboardWindow && !STATE.dashboardWindow.closed) {
     STATE.dashboardWindow.focus();
@@ -231,6 +259,8 @@ function abrirDashboard() {
 
 <canvas id="grafico"></canvas>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 let chart;
 let dadosRecebidos = null;
@@ -247,7 +277,6 @@ function preencherFiltros(dados) {
   selMes.innerHTML = "<option value=''>Todos</option>" + meses.map(m => "<option>"+m+"</option>").join("");
   selSetor.innerHTML = "<option value=''>Todos</option>" + [...new Set(dados.map(r => r.setor))].map(s => "<option>"+s+"</option>").join("");
 
-  // ATIVANDO O FILTRO DE SETOR TAMBÉM
   selAno.onchange = selMes.onchange = selSetor.onchange = atualizarGrafico;
 }
 
@@ -301,14 +330,7 @@ function atualizarGrafico() {
 window.addEventListener("message", e => {
   if (!e.data?.type || e.data.type !== "DADOS_AVANCADOS") return;
 
-  // AGORA MANTENDO O SETOR
-  dadosRecebidos = e.data.rows.map(r => ({
-    ano: r.ano,
-    mes: r.mes,
-    setor: r.setor, 
-    pergunta: r.pergunta,
-    valor: r.valor
-  }));
+  dadosRecebidos = e.data.rows;
 
   document.getElementById("total").textContent = e.data.total;
   preencherFiltros(dadosRecebidos);
@@ -352,14 +374,14 @@ function atualizarDashboardAvancado() {
   STATE.rowsVisiveis.forEach(r => {
     const ano = idxAno !== -1 ? r[idxAno] || "N/I" : "N/I";
     const mes = r[idxMes] || "N/I";
-    const setor = idxSetor !== -1 ? r[idxSetor] || "N/I" : "N/I"; // <-- ADICIONADO
+    const setor = idxSetor !== -1 ? r[idxSetor] || "N/I" : "N/I";
 
     colPerguntas.forEach(p => {
       const valor = Number(r[p.i]) || 0;
       rows.push({ 
         ano, 
         mes, 
-        setor,   // <-- ENVIANDO SETOR
+        setor,
         pergunta: p.c, 
         valor 
       });
